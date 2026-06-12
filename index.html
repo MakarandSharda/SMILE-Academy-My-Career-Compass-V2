@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>My Career Compass — SMILE Academy</title>
+<meta name="description" content="AI-powered skill gap analyser and personalised 12-month learning journey. Free, open source. Built by SMILE Academy, Sharda Motor Industries Limited.">
+<meta name="author" content="SMILE Academy — Sharda Motor Industries Limited">
+<meta property="og:title" content="My Career Compass — Skill Gap Analyser">
+<meta property="og:description" content="Discover your skill gaps and get a personalised 12-month learning journey. Free, AI-powered, India + global context.">
+<!-- MIT Licence — open source, free to use, adapt and share -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky-ddd:#013559;--sky-dd:#024F7A;--sky-d:#0369A1;--sky-d2:#0284C7;
+  --sky:#0EA5E9;--sky-l:#BAE6FD;--sky-xl:#E0F2FE;--sky-xxl:#F0F9FF;
+  --w:#FFF;--g50:#F8FAFC;--g100:#F1F5F9;--g200:#E2E8F0;--g300:#CBD5E1;
+  --g400:#94A3B8;--g500:#64748B;--g600:#475569;--g700:#334155;--g800:#1E293B;--g900:#0F172A;
+  --ok:#059669;--ok-l:#ECFDF5;--ok-b:#A7F3D0;
+  --warn:#D97706;--warn-l:#FFFBEB;--warn-b:#FDE68A;
+  --err:#DC2626;--err-l:#FEF2F2;--err-b:#FECACA;
+  --ind:#4338CA;--ind-l:#EEF2FF;
+  --r:8px;--rl:12px;--rxl:16px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 4px 12px rgba(0,0,0,.05);
+}
+body{font-family:'Arial',Helvetica,sans-serif;background:var(--g50);color:var(--g800);min-height:100vh;font-size:14px}
+nav{background:var(--sky-ddd);padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:300;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.nav-l{display:flex;align-items:center;gap:9px}
+.nav-ico{width:32px;height:32px;background:var(--sky);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-ico i{font-size:18px;color:#fff}
+.nav-name{font-size:15px;font-weight:700;color:#fff;line-height:1.2}
+.nav-sub{font-size:10px;color:rgba(255,255,255,.6)}
+.nav-r{display:flex;align-items:center;gap:7px}
+.mit{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;color:rgba(255,255,255,.75);letter-spacing:.4px}
+.adm-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 11px;font-size:11px;font-weight:700;color:rgba(255,255,255,.85);cursor:pointer;font-family:'Arial',sans-serif;transition:background .15s}
+.adm-btn:hover{background:rgba(255,255,255,.2)}
+.hero{background:linear-gradient(140deg,var(--sky-ddd) 0%,var(--sky-d) 60%,var(--sky) 100%);padding:2.5rem 1.25rem 3.25rem;text-align:center;color:#fff}
+.hero h1{font-size:clamp(20px,4.5vw,28px);font-weight:700;margin-bottom:9px;letter-spacing:-.3px}
+.hero p{font-size:14px;opacity:.88;max-width:540px;margin:0 auto 1.125rem;line-height:1.7}
+.hero-badges{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
+.hbdg{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;color:#fff}
+.pb-wrap{background:#fff;border-bottom:1px solid var(--g200);position:sticky;top:56px;z-index:200;box-shadow:var(--sh)}
+.pb{max-width:860px;margin:0 auto;display:flex}
+.ps{flex:1;padding:10px 6px;display:flex;align-items:center;justify-content:center;gap:5px;font-size:11px;font-weight:600;color:var(--g400);border-bottom:3px solid transparent;transition:all .2s}
+.ps.done{color:var(--ok);border-bottom-color:var(--ok)}
+.ps.active{color:var(--sky-d);border-bottom-color:var(--sky-d)}
+.ps-n{width:20px;height:20px;border-radius:50%;border:2px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.ps.done .ps-n{background:var(--ok);border-color:var(--ok);color:#fff}
+.ps-lbl{display:none}
+@media(min-width:480px){.ps-lbl{display:block}}
+main{max-width:860px;margin:0 auto;padding:2rem 1rem 5rem}
+.screen{display:none}.screen.on{display:block}
+.shd{margin-bottom:1.5rem}
+.shd h2{font-size:19px;font-weight:700;color:var(--g900);margin-bottom:5px}
+.shd p{font-size:13px;color:var(--g500);line-height:1.65}
+.card{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1.25rem;margin-bottom:13px;box-shadow:var(--sh)}
+.chd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--sky-d);margin-bottom:.875rem;display:flex;align-items:center;gap:5px}
+.chd i{font-size:14px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px}
+@media(max-width:560px){.g2,.g3{grid-template-columns:1fr}}
+.field{margin-bottom:11px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--g600);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px}
+input[type=text],select,textarea{width:100%;font-family:'Arial',sans-serif;font-size:13px;color:var(--g800);background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:9px 11px;outline:none;transition:border-color .15s}
+input[type=text]:focus,select:focus,textarea:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(14,165,233,.08)}
+textarea{resize:vertical;min-height:80px;line-height:1.6}
+.uzone{border:2px dashed var(--g300);border-radius:var(--rl);padding:1.375rem;text-align:center;cursor:pointer;transition:all .2s;background:var(--sky-xxl);position:relative}
+.uzone:hover,.uzone.drag{border-color:var(--sky);background:var(--sky-xl)}
+.uzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.uzone i{font-size:28px;color:var(--sky);display:block;margin-bottom:7px}
+.uzone-t{font-size:13px;font-weight:700;color:var(--sky-d);margin-bottom:3px}
+.uzone-s{font-size:11px;color:var(--g400)}
+.utypes{display:flex;justify-content:center;gap:5px;margin-top:8px;flex-wrap:wrap}
+.utype{background:var(--g100);border:1px solid var(--g200);border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--g500)}
+.fstatus{margin-top:9px;padding:7px 11px;border-radius:var(--r);font-size:12px;font-weight:600;display:none}
+.fstatus.ok{background:var(--ok-l);color:var(--ok);border:1px solid var(--ok-b);display:block}
+.fstatus.err{background:var(--err-l);color:var(--err);border:1px solid var(--err-b);display:block}
+.fstatus.proc{background:var(--sky-xl);color:var(--sky-d);border:1px solid var(--sky-l);display:block}
+.fprev{background:var(--sky-xxl);border:1px solid var(--sky-l);border-radius:var(--r);padding:9px 11px;margin-top:7px;font-size:12px;color:var(--sky-d);line-height:1.5;max-height:75px;overflow-y:auto;display:none}
+.or-sep{margin:11px 0;text-align:center;font-size:11px;color:var(--g400);font-weight:700;display:flex;align-items:center;gap:10px}
+.or-sep::before,.or-sep::after{content:'';flex:1;height:1px;background:var(--g200)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--g200);background:#fff;color:var(--g500);font-size:12px;cursor:pointer;transition:all .15s;font-weight:500;font-family:'Arial',sans-serif}
+.chip:hover{border-color:var(--sky);color:var(--sky-d)}
+.chip.on{background:var(--sky-xxl);border-color:var(--sky);color:var(--sky-d);font-weight:700}
+.ksa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:13px}
+@media(max-width:640px){.ksa-grid{grid-template-columns:1fr}}
+.ksa-p{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1rem;border-top:3px solid var(--sky-d);box-shadow:var(--sh)}
+.ksa-p.ks{border-top-color:var(--ok)}.ksa-p.ka{border-top-color:var(--warn)}
+.ksa-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--g500);margin-bottom:.875rem;display:flex;align-items:center;gap:4px}
+.ksa-hd i{font-size:13px}
+.srow{margin-bottom:9px}.srow:last-child{margin-bottom:0}
+.srow-top{display:flex;justify-content:space-between;margin-bottom:3px}
+.srow-n{font-size:11px;color:var(--g600)}
+.srow-v{font-size:11px;font-weight:700;color:var(--sky-d)}
+.ks .srow-v{color:var(--ok)}.ka .srow-v{color:var(--warn)}
+input[type=range]{width:100%;height:4px;border-radius:2px;background:var(--g200);border:none;padding:0;-webkit-appearance:none;cursor:pointer;accent-color:var(--sky-d)}
+.ks input[type=range]{accent-color:var(--ok)}.ka input[type=range]{accent-color:var(--warn)}
+.btn-row{display:flex;justify-content:flex-end;gap:9px;padding-top:1.375rem;margin-top:1.375rem;border-top:1px solid var(--g100)}
+.btn{padding:9px 20px;border-radius:var(--r);font-family:'Arial',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .18s;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn i{font-size:15px}
+.btn-ghost{background:var(--g100);color:var(--g600);border:1px solid var(--g200)}
+.btn-ghost:hover:not(:disabled){background:var(--g200)}
+.btn-ghost:disabled{opacity:.35;cursor:not-allowed}
+.btn-sky{background:var(--sky-d);color:#fff}
+.btn-sky:hover{background:var(--sky);transform:translateY(-1px);box-shadow:0 4px 12px rgba(3,105,161,.25)}
+.loading{text-align:center;padding:4rem 1rem}
+.spin{width:40px;height:40px;border:3px solid var(--g200);border-top-color:var(--sky);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 1.125rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+.load-t{font-size:15px;font-weight:700;color:var(--g700);margin-bottom:4px}
+.load-s{font-size:12px;color:var(--g400)}
+.load-steps{margin-top:.875rem;display:flex;flex-direction:column;gap:4px;max-width:260px;margin-left:auto;margin-right:auto}
+.lstep{font-size:11px;padding:5px 10px;border-radius:4px;color:var(--g400);background:transparent;transition:all .25s;text-align:left}
+.lstep.act{background:var(--sky-xl);color:var(--sky-d);font-weight:600}
+.lstep.done{color:var(--ok)}
+.res-hero{background:linear-gradient(135deg,var(--sky-ddd),var(--sky-d));border-radius:var(--rxl);padding:1.375rem;margin-bottom:13px;display:flex;align-items:center;gap:1.125rem;color:#fff;box-shadow:var(--sh)}
+.ava{width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0;font-family:'Arial',monospace}
+.rh-name{font-size:17px;font-weight:700;margin-bottom:3px}
+.rh-meta{font-size:12px;opacity:.75;display:flex;gap:11px;flex-wrap:wrap}
+.scores{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:13px}
+@media(max-width:520px){.scores{grid-template-columns:repeat(2,1fr)}}
+.sc{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:.875rem;text-align:center;box-shadow:var(--sh)}
+.sc-n{font-size:24px;font-weight:700;line-height:1;margin-bottom:3px}
+.sc-l{font-size:10px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.sc-bar{height:4px;border-radius:2px;background:var(--g100)}
+.sc-fill{height:100%;border-radius:2px;transition:width .9s ease;width:0%}
+.coach-box{background:var(--sky-xxl);border:1px solid var(--sky-xl);border-left:4px solid var(--sky-d);border-radius:0 var(--rl) var(--rl) 0;padding:.875rem 1.125rem;margin-bottom:13px}
+.coach-hd{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--sky-d);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.coach-hd i{font-size:14px}
+.coach-box p{font-size:13px;color:var(--g700);line-height:1.75}
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.75rem}
+.leg{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--g500)}
+.ldot{width:8px;height:8px;border-radius:50%}
+.gap-item{display:flex;align-items:center;gap:9px;padding:9px 0;border-bottom:1px solid var(--g100)}
+.gap-item:last-child{border-bottom:none}
+.gdot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.gc{background:var(--err)}.gm{background:var(--warn)}.gl{background:var(--ok)}
+.gbw{flex:1;min-width:0}
+.gname{font-size:13px;font-weight:600;color:var(--g700);margin-bottom:4px}
+.gcat{font-size:11px;color:var(--g400);font-weight:400;margin-left:5px}
+.gtrack{height:7px;border-radius:4px;background:var(--g100);position:relative}
+.gcur{height:100%;border-radius:4px;position:absolute;top:0;left:0;transition:width .7s ease}
+.greq{position:absolute;top:-3px;height:13px;width:2.5px;border-radius:1px;background:var(--g500)}
+.gnums{font-size:11px;font-weight:700;color:var(--g500);white-space:nowrap;font-family:'Arial',monospace}
+.jgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+@media(max-width:520px){.jgrid{grid-template-columns:1fr}}
+.jcard{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1rem;box-shadow:var(--sh)}
+.jtag{display:inline-block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:12px;margin-bottom:7px}
+.jt1{background:var(--sky-xxl);color:var(--sky-d)}.jt2{background:var(--ind-l);color:var(--ind)}
+.jt3{background:var(--warn-l);color:var(--warn)}.jt4{background:var(--ok-l);color:var(--ok)}
+.jtheme{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:7px}
+.jitems{list-style:none;display:flex;flex-direction:column;gap:4px}
+.jitems li{font-size:12px;color:var(--g600);display:flex;align-items:flex-start;gap:5px;line-height:1.55}
+.jitems li::before{content:'→';color:var(--sky);font-weight:700;flex-shrink:0;font-size:11px;margin-top:1px}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:4px 11px;border-radius:14px;font-weight:600}
+.tstr{background:var(--ok-l);color:var(--ok);border:1px solid var(--ok-b)}
+.tgap{background:var(--err-l);color:var(--err);border:1px solid var(--err-b)}
+.act-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--g100)}
+.act-btn{flex:1;min-width:115px;background:#fff;border:1.5px solid var(--g200);border-radius:var(--r);padding:8px 11px;color:var(--g600);font-family:'Arial',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .18s;box-shadow:var(--sh)}
+.act-btn:hover{border-color:var(--sky-d);color:var(--sky-d)}
+.act-btn.pri{background:var(--sky-d);border-color:var(--sky-d);color:#fff}
+.act-btn.pri:hover{background:var(--sky)}
+.act-btn i{font-size:13px}
+#adminPanel{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;overflow-y:auto}
+.adm-modal{background:var(--g50);min-height:100vh;max-width:1080px;margin:0 auto}
+.adm-nav{background:var(--sky-ddd);padding:0 1.25rem;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.adm-nav-t{color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px}
+.adm-close{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:5px 12px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Arial',sans-serif}
+.adm-body{padding:1.25rem}
+.adm-lock{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:2rem;max-width:380px;margin:2.5rem auto;text-align:center;box-shadow:var(--sh)}
+.adm-lock h3{font-size:17px;font-weight:700;margin-bottom:.5rem;color:var(--g800)}
+.adm-lock p{font-size:13px;color:var(--g500);margin-bottom:1.125rem}
+.adm-lock input{width:100%;border:1.5px solid var(--g200);border-radius:var(--r);padding:9px 12px;font-family:'Arial',sans-serif;font-size:14px;margin-bottom:9px;outline:none}
+.adm-lock input:focus{border-color:var(--sky)}
+.adm-lock button{width:100%;background:var(--sky-d);color:#fff;border:none;border-radius:var(--r);padding:10px;font-family:'Arial',sans-serif;font-size:14px;font-weight:700;cursor:pointer}
+.adm-lock button:hover{background:var(--sky)}
+.adm-err{font-size:12px;color:var(--err);margin-top:5px;display:none}
+.adm-tabs{display:flex;gap:0;border-bottom:1px solid var(--g200);margin-bottom:1.25rem;overflow-x:auto}
+.atab{padding:10px 16px;font-size:13px;font-weight:600;color:var(--g500);cursor:pointer;border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap;font-family:'Arial',sans-serif}
+.atab.on{color:var(--sky-d);border-bottom-color:var(--sky-d)}
+.atab-p{display:none}.atab-p.on{display:block}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:1.25rem}
+@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1.125rem;box-shadow:var(--sh)}
+.kpi-n{font-size:26px;font-weight:700;color:var(--sky-d);line-height:1;margin-bottom:3px}
+.kpi-l{font-size:11px;color:var(--g400);text-transform:uppercase;letter-spacing:.4px}
+.chart-wrap{background:#fff;border:1px solid var(--g200);border-radius:var(--rl);padding:1.125rem;margin-bottom:13px;box-shadow:var(--sh)}
+.chart-t{font-size:13px;font-weight:700;color:var(--g800);margin-bottom:.875rem}
+.bar-chart{display:flex;flex-direction:column;gap:7px}
+.bar-row{display:flex;align-items:center;gap:9px}
+.bar-lbl{font-size:11px;color:var(--g600);width:150px;flex-shrink:0;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;height:18px;background:var(--g100);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .8s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:5px;min-width:24px}
+.bar-val{font-size:10px;font-weight:700;color:#fff;white-space:nowrap}
+.data-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.data-tbl th{background:var(--sky-d);color:#fff;padding:7px 9px;text-align:left;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.data-tbl td{padding:7px 9px;border-bottom:1px solid var(--g100);color:var(--g700)}
+.data-tbl tr:nth-child(even) td{background:var(--g50)}
+.data-tbl tr:hover td{background:var(--sky-xxl)}
+.setup-box{background:var(--sky-xxl);border:1px solid var(--sky-xl);border-radius:var(--rl);padding:1.125rem;margin-bottom:13px}
+.setup-box h4{font-size:13px;font-weight:700;color:var(--sky-d);margin-bottom:.625rem}
+.setup-box ol{padding-left:1.125rem;color:var(--g700);font-size:13px;line-height:2}
+.script-box{background:var(--g800);border-radius:var(--r);padding:.875rem;font-family:'Arial',monospace;font-size:11px;color:#a5f3fc;line-height:1.7;white-space:pre-wrap;max-height:300px;overflow-y:auto;margin:9px 0}
+.copy-script{background:var(--sky-d);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Arial',sans-serif;margin-top:6px}
+.url-row{display:flex;gap:7px;margin-top:9px}
+.url-row input{flex:1;border:1.5px solid var(--g200);border-radius:var(--r);padding:8px 11px;font-family:'Arial',sans-serif;font-size:13px;outline:none}
+.url-row input:focus{border-color:var(--sky)}
+.url-row button{background:var(--ok);color:#fff;border:none;border-radius:var(--r);padding:8px 13px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Arial',sans-serif;white-space:nowrap}
+.no-data{text-align:center;padding:2rem;color:var(--g400);font-size:13px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--g800);color:#fff;padding:9px 16px;border-radius:var(--r);font-size:13px;font-weight:600;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:1000;max-width:290px}
+.toast.show{opacity:1;transform:translateY(0)}
+footer{background:var(--sky-ddd);color:rgba(255,255,255,.5);text-align:center;padding:1.25rem;font-size:12px;line-height:1.9}
+footer strong{color:#fff}
+@media print{nav,.pb-wrap,.act-row,footer,#adminPanel,.btn-row{display:none!important}main{padding:0}body{background:#fff}.card{box-shadow:none}}
+
+.upload-confirm{display:flex;align-items:center;gap:10px;background:var(--ok-l);border:1px solid var(--ok-lt);border-radius:var(--r);padding:10px 14px;margin:8px 0;font-size:12px}
+.upload-confirm i{font-size:20px;color:var(--ok);flex-shrink:0}
+.upload-confirm-body{flex:1;min-width:0}
+.upload-confirm-title{font-weight:700;color:var(--ok);margin-bottom:2px}
+.upload-confirm-sub{color:var(--g500);font-size:11px}
+.upload-confirm-badge{background:var(--ok);color:#fff;border-radius:12px;padding:3px 10px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-l">
+    <div class="nav-ico"><i class="ti ti-route" aria-hidden="true"></i></div>
+    <div><div class="nav-name">My Career Compass</div><div class="nav-sub">Skill Gap Analyser · SMILE Academy</div></div>
+  </div>
+  <div class="nav-r">
+    <span class="mit">MIT Licence</span>
+    <button class="adm-btn" onclick="openAdmin()"><i class="ti ti-chart-bar" style="font-size:12px;vertical-align:-1px" aria-hidden="true"></i> Admin</button>
+  </div>
+</nav>
+<div class="hero">
+  <h1>Discover your personalised learning journey</h1>
+  <p>Upload your JD, rate your skills, and receive an AI-powered 12-month development roadmap — specific to your role, function and career goal.</p>
+  <div class="hero-badges">
+    <span class="hbdg">✦ Free &amp; open source</span>
+    <span class="hbdg">✦ Upload JD / KPI files</span>
+    <span class="hbdg">✦ India + Global context</span>
+    <span class="hbdg">✦ Download Word report</span>
+  </div>
+</div>
+<div class="pb-wrap">
+  <div class="pb">
+    <div class="ps active" id="ps1"><div class="ps-n">1</div><span class="ps-lbl">Profile</span></div>
+    <div class="ps" id="ps2"><div class="ps-n">2</div><span class="ps-lbl">Role &amp; JD</span></div>
+    <div class="ps" id="ps3"><div class="ps-n">3</div><span class="ps-lbl">Self-assess</span></div>
+    <div class="ps" id="ps4"><div class="ps-n">4</div><span class="ps-lbl">My journey</span></div>
+  </div>
+</div>
+<main>
+<!-- SCREEN 1 -->
+<div class="screen on" id="sc1">
+  <div class="shd"><h2>Tell us about yourself</h2><p>This is your personal space. Your information is used only to personalise your results and is not shared without your permission.</p></div>
+  <div class="card">
+    <div class="chd"><i class="ti ti-id-badge" aria-hidden="true"></i> Your details</div>
+    <div class="g2">
+      <div class="field"><label>Your name</label><input type="text" id="v_name" placeholder="e.g. Ravi Kumar / Priya Sharma"></div>
+      <div class="field"><label>Current designation</label><input type="text" id="v_role" placeholder="e.g. Production Supervisor, HR Manager"></div>
+    </div>
+    <div class="g3">
+      <div class="field"><label>Function / department</label>
+        <select id="v_func" onchange="onFuncChange()">
+          <option value="">Select your function</option>
+          <option value="mfg">Manufacturing / Production</option>
+          <option value="quality">Quality / Process Excellence</option>
+          <option value="maint">Maintenance / Engineering</option>
+          <option value="scm">Supply Chain / Logistics</option>
+          <option value="sales">Sales &amp; Business Development</option>
+          <option value="finance">Finance &amp; Accounts</option>
+          <option value="hr">HR / Learning &amp; Development</option>
+          <option value="rnd">R&amp;D / Design Engineering</option>
+          <option value="strategy">Strategy / Planning</option>
+          <option value="it">IT / Digital</option>
+          <option value="safety">Safety / EHS</option>
+        </select>
+      </div>
+      <div class="field"><label>Total experience</label>
+        <select id="v_exp">
+          <option value="">Select</option>
+          <option>0–3 years</option><option>4–8 years</option>
+          <option>9–15 years</option><option>16–20 years</option><option>20+ years</option>
+        </select>
+      </div>
+      <div class="field"><label>Career level</label>
+        <select id="v_lev">
+          <option value="">Select</option>
+          <option>Shopfloor / Operator</option><option>Technician / Skilled worker</option>
+          <option>Engineer / Executive</option><option>Senior / Team lead</option>
+          <option>Manager / AGM</option><option>Sr. Manager / DGM</option>
+          <option>Head / GM / VP</option><option>CXO / Director</option>
+        </select>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="field"><label>Next career aspiration</label><input type="text" id="v_aspire" placeholder="e.g. Plant Head, CHRO, GM Finance"></div>
+      <div class="field"><label>Key goal this year</label><input type="text" id="v_goal" placeholder="e.g. Get promoted, build analytics capability"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chd"><i class="ti ti-heart" aria-hidden="true"></i> What matters most to you right now?</div>
+    <div class="chips" id="chips1">
+      <div class="chip" onclick="tog(this)">Getting promoted</div>
+      <div class="chip" onclick="tog(this)">Becoming a better leader</div>
+      <div class="chip" onclick="tog(this)">Building new skills</div>
+      <div class="chip" onclick="tog(this)">Switching function</div>
+      <div class="chip" onclick="tog(this)">Technical mastery</div>
+      <div class="chip" onclick="tog(this)">Digital / AI readiness</div>
+      <div class="chip" onclick="tog(this)">Global / MNC exposure</div>
+      <div class="chip" onclick="tog(this)">Improving team performance</div>
+      <div class="chip" onclick="tog(this)">Recognition &amp; visibility</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" disabled>← Back</button>
+    <button class="btn btn-sky" onclick="go(2)"><i class="ti ti-arrow-right" aria-hidden="true"></i> Next: Role &amp; JD</button>
+  </div>
+</div>
+<!-- SCREEN 2 -->
+<div class="screen" id="sc2">
+  <div class="shd"><h2>Your role and what's expected of you</h2><p>Upload your JD and KPI document, or type your responsibilities. The AI extracts the competencies your role requires — making your gap analysis specific, not generic.</p></div>
+  <div class="card">
+    <div class="chd"><i class="ti ti-upload" aria-hidden="true"></i> Upload your Job Description (JD)</div>
+    <div class="uzone" id="jdZone">
+      <input type="file" id="jdFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" onchange="handleUpload('jd',this)">
+      <i class="ti ti-file-upload" aria-hidden="true"></i>
+      <div class="uzone-t">Click to upload or drag and drop</div>
+      <div class="uzone-s">Your Job Description file</div>
+      <div class="utypes"><span class="utype">PDF</span><span class="utype">Word</span><span class="utype">Excel</span><span class="utype">TXT</span></div>
+    </div>
+    <div class="fstatus" id="jdStat"></div>
+    <div class="fprev" id="jdPrev"></div>
+    <div class="upload-confirm" id="jdConfirm" style="display:none">
+      <i class="ti ti-file-check" aria-hidden="true"></i>
+      <div class="upload-confirm-body">
+        <div class="upload-confirm-title" id="jdConfirmTitle">JD file processed</div>
+        <div class="upload-confirm-sub">Content extracted &amp; active in AI analysis &nbsp;·&nbsp; <span id="jdCharCount">0</span> chars &nbsp;·&nbsp; <span id="jdFileName"></span></div>
+      </div>
+      <div class="upload-confirm-badge">Active in AI ✓</div>
+    </div>
+    <div class="or-sep">OR TYPE BELOW</div>
+    <div class="field"><label>Describe your responsibilities (or paste your JD)</label>
+      <textarea id="v_jd" placeholder="e.g. I manage the press shop with 18 operators, drive daily production targets, coordinate quality checks, lead 5S, manage shift handovers..."></textarea>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chd"><i class="ti ti-target" aria-hidden="true"></i> Upload your KPI / Goal Sheet (optional)</div>
+    <div class="uzone" id="kpiZone">
+      <input type="file" id="kpiFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.txt,.csv" onchange="handleUpload('kpi',this)">
+      <i class="ti ti-table-import" aria-hidden="true"></i>
+      <div class="uzone-t">Click to upload or drag and drop</div>
+      <div class="uzone-s">Your KPI sheet, goal sheet or performance plan</div>
+      <div class="utypes"><span class="utype">PDF</span><span class="utype">Word</span><span class="utype">Excel</span><span class="utype">CSV</span></div>
+    </div>
+    <div class="fstatus" id="kpiStat"></div>
+    <div class="fprev" id="kpiPrev"></div>
+    <div class="upload-confirm" id="kpiConfirm" style="display:none">
+      <i class="ti ti-target" aria-hidden="true"></i>
+      <div class="upload-confirm-body">
+        <div class="upload-confirm-title" id="kpiConfirmTitle">KPI sheet processed</div>
+        <div class="upload-confirm-sub">Goals extracted &amp; active in AI analysis &nbsp;·&nbsp; <span id="kpiCharCount">0</span> chars &nbsp;·&nbsp; <span id="kpiFileName2"></span></div>
+      </div>
+      <div class="upload-confirm-badge">Active in AI ✓</div>
+    </div>
+    <div class="or-sep">OR TYPE BELOW</div>
+    <div class="g2">
+      <div class="field"><label>Key KPI / target #1</label><input type="text" id="v_kpi1" placeholder="e.g. Achieve 98% line efficiency, Zero LTI"></div>
+      <div class="field"><label>Key KPI / target #2 (optional)</label><input type="text" id="v_kpi2" placeholder="e.g. Reduce rework by 20%"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="chd"><i class="ti ti-list-check" aria-hidden="true"></i> Which capability areas matter most for your role?</div>
+    <div class="chips" id="chips2">
+      <div class="chip" onclick="tog(this)">Technical / functional expertise</div>
+      <div class="chip" onclick="tog(this)">People &amp; team leadership</div>
+      <div class="chip" onclick="tog(this)">Problem solving</div>
+      <div class="chip" onclick="tog(this)">Communication &amp; influence</div>
+      <div class="chip" onclick="tog(this)">Strategic thinking</div>
+      <div class="chip" onclick="tog(this)">Digital tools &amp; technology</div>
+      <div class="chip" onclick="tog(this)">Process improvement / Lean</div>
+      <div class="chip" onclick="tog(this)">Safety &amp; compliance</div>
+      <div class="chip" onclick="tog(this)">Data &amp; analytics</div>
+      <div class="chip" onclick="tog(this)">Project management</div>
+      <div class="chip" onclick="tog(this)">Customer / stakeholder focus</div>
+      <div class="chip" onclick="tog(this)">Coaching &amp; mentoring</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="go(1)">← Back</button>
+    <button class="btn btn-sky" onclick="go(3)"><i class="ti ti-arrow-right" aria-hidden="true"></i> Next: Self-Assessment</button>
+  </div>
+</div>
+<!-- SCREEN 3 -->
+<div class="screen" id="sc3">
+  <div class="shd"><h2>How would you rate yourself today?</h2><p>Move the sliders honestly — not aspirationally. The AI compares your rating against what your role requires to surface the real gaps.</p></div>
+  <div class="ksa-grid">
+    <div class="ksa-p kk"><div class="ksa-hd"><i class="ti ti-brain" aria-hidden="true"></i> Knowledge</div><div id="k_sl"></div></div>
+    <div class="ksa-p ks"><div class="ksa-hd"><i class="ti ti-tool" aria-hidden="true"></i> Skills</div><div id="s_sl"></div></div>
+    <div class="ksa-p ka"><div class="ksa-hd"><i class="ti ti-heart" aria-hidden="true"></i> Attitude &amp; behaviour</div><div id="a_sl"></div></div>
+  </div>
+  <div class="card">
+    <div class="chd"><i class="ti ti-writing" aria-hidden="true"></i> Two quick reflections</div>
+    <div class="field"><label>What is the hardest part of your job right now?</label>
+      <textarea id="v_hard" placeholder="e.g. Presenting data confidently to senior leadership, or getting the team to follow SOPs consistently..."></textarea>
+    </div>
+    <div class="field"><label>If you could build one new capability in 6 months, what would it be?</label>
+      <textarea id="v_wish" placeholder="e.g. Stronger analytics to back decisions with data, or better stakeholder management skills..."></textarea>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-ghost" onclick="go(2)">← Back</button>
+    <button class="btn btn-sky" onclick="generate()"><i class="ti ti-cpu" aria-hidden="true"></i> Generate my learning journey</button>
+  </div>
+</div>
+<!-- SCREEN 4 -->
+<div class="screen" id="sc4">
+  <div class="loading" id="loadView">
+    <div class="spin"></div>
+    <div class="load-t">Building your personalised journey...</div>
+    <div class="load-s">This takes about 10–15 seconds</div>
+    <div class="load-steps" id="loadSteps"></div>
+  </div>
+  <div id="resView" style="display:none">
+    <div class="btn-row" style="margin-bottom:1rem;padding-top:0;border-top:none;margin-top:0">
+      <button class="btn btn-ghost" onclick="go(3)">← Back to Assessment</button>
+      <button class="btn btn-ghost" onclick="startOver()"><i class="ti ti-refresh" aria-hidden="true"></i> Start again</button>
+    </div>
+    <div class="res-hero">
+      <div class="ava" id="res_av">--</div>
+      <div><div class="rh-name" id="res_nm">—</div><div class="rh-meta"><span id="rm_role">—</span><span id="rm_func">—</span><span id="rm_exp">—</span></div></div>
+    </div>
+    <div class="scores">
+      <div class="sc"><div class="sc-l">Overall readiness</div><div class="sc-n" id="sn0" style="color:var(--sky-d)">—</div><div class="sc-bar"><div class="sc-fill" id="sf0" style="background:var(--sky-d)"></div></div></div>
+      <div class="sc"><div class="sc-l">Knowledge</div><div class="sc-n" id="sn1" style="color:var(--sky-d)">—</div><div class="sc-bar"><div class="sc-fill" id="sf1" style="background:var(--sky-d)"></div></div></div>
+      <div class="sc"><div class="sc-l">Skills</div><div class="sc-n" id="sn2" style="color:var(--ok)">—</div><div class="sc-bar"><div class="sc-fill" id="sf2" style="background:var(--ok)"></div></div></div>
+      <div class="sc"><div class="sc-l">Attitude</div><div class="sc-n" id="sn3" style="color:var(--warn)">—</div><div class="sc-bar"><div class="sc-fill" id="sf3" style="background:var(--warn)"></div></div></div>
+    </div>
+    <div class="card" id="methodCard" style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none" onclick="toggleMethod()">
+        <div class="chd" style="margin-bottom:0"><i class="ti ti-calculator" aria-hidden="true"></i> How your scores are calculated</div>
+        <span id="methodArrow" style="font-size:12px;color:var(--g400);transition:transform .2s">▼ Show</span>
+      </div>
+      <div id="methodBody" style="display:none;margin-top:.875rem;padding-top:.875rem;border-top:1px solid var(--g100)">
+        <div style="font-size:12px;color:var(--g600);line-height:1.85">
+          <div style="margin-bottom:6px"><strong style="color:var(--sky-d)">Dimension scores:</strong> Average of your 5 slider ratings × 20 → 0–100 scale. (e.g., sliders 4+3+2+3+3 = avg 3.0 × 20 = 60%)</div>
+          <div style="margin-bottom:6px"><strong style="color:var(--sky-d)">Overall readiness:</strong> Weighted composite — Knowledge 35% + Skills 40% + Attitude 25% — reflecting that Skills execution drives the most career impact.</div>
+          <div style="margin-bottom:6px"><strong style="color:var(--sky-d)">AI recalibration:</strong> Your 15 slider values, JD text, KPIs, career level, aspiration, and challenges are all sent to the AI. Two people with identical slider scores but different JDs, roles, or aspirations will receive different gap profiles and journeys.</div>
+          <div style="margin-bottom:6px"><strong style="color:var(--sky-d)">Gap calculation:</strong> For each competency: Gap = Required level (from JD + role benchmarks) − Current level (your slider). Critical = gap ≥ 2. Moderate = gap 1. Low = gap &lt; 1.</div>
+          <div><strong style="color:var(--sky-d)">Role benchmarks:</strong> Required levels are derived from your function, career level, and JD — not generic defaults. A DGM in HR needs Skills ≥ 4/5; an Engineer in Manufacturing needs different anchors.</div>
+        </div>
+        <div id="scoreBreakdownBox" style="margin-top:.75rem;padding:.75rem;background:var(--g50);border-radius:var(--r);font-size:12px;color:var(--g600);line-height:1.7"></div>
+      </div>
+    </div>
+    <div class="coach-box"><div class="coach-hd"><i class="ti ti-robot" aria-hidden="true"></i> Your personal coach says</div><p id="coachMsg">—</p></div>
+    <div class="card">
+      <div class="chd"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Skill gaps at a glance</div>
+      <div class="legend">
+        <div class="leg"><div class="ldot" style="background:var(--err)"></div>Critical</div>
+        <div class="leg"><div class="ldot" style="background:var(--warn)"></div>Moderate</div>
+        <div class="leg"><div class="ldot" style="background:var(--ok)"></div>Small</div>
+        <div class="leg" style="font-size:11px;color:var(--g400)">Bar = current · Line = required</div>
+      </div>
+      <div id="gapList"></div>
+    </div>
+    <div class="card"><div class="chd"><i class="ti ti-map" aria-hidden="true"></i> Your 12-month personalised learning journey</div><div class="jgrid" id="jGrid"></div></div>
+    <div class="card"><div class="chd" style="margin-bottom:.5rem"><i class="ti ti-shield-check" aria-hidden="true"></i> Your current strengths</div><div class="tag-row" id="strTags"></div></div>
+    <div class="card"><div class="chd" style="margin-bottom:.5rem"><i class="ti ti-flame" aria-hidden="true"></i> Priority growth areas</div><div class="tag-row" id="devTags"></div></div>
+    <div class="act-row">
+      <button class="act-btn pri" id="dlBtn" onclick="downloadWord()"><i class="ti ti-file-word" aria-hidden="true"></i> Download Word Report</button>
+      <button class="act-btn" onclick="window.print()"><i class="ti ti-printer" aria-hidden="true"></i> Print / PDF</button>
+      <button class="act-btn" onclick="copyReport()"><i class="ti ti-copy" aria-hidden="true"></i> Copy summary</button>
+    </div>
+  </div>
+</div>
+</main>
+<footer><strong>My Career Compass</strong> &nbsp;·&nbsp; <strong>SMILE Academy</strong> &nbsp;·&nbsp; Sharda Motor Industries Limited<br>Open source &nbsp;·&nbsp; MIT Licence &nbsp;·&nbsp; Free to use, adapt and share<br><span style="font-size:11px;opacity:.5">Your data is used only to personalise your results. No data is stored on any server without your knowledge.</span></footer>
+<!-- ADMIN PANEL -->
+<div id="adminPanel">
+  <div class="adm-modal">
+    <div class="adm-nav"><div class="adm-nav-t"><i class="ti ti-dashboard" aria-hidden="true"></i> Admin Dashboard — SMILE Academy</div><button class="adm-close" onclick="closeAdmin()">✕ Close</button></div>
+    <div class="adm-body">
+      <div id="adminLock">
+        <div class="adm-lock">
+          <i class="ti ti-lock" style="font-size:30px;color:var(--sky-d);margin-bottom:.625rem;display:block" aria-hidden="true"></i>
+          <h3>Admin Access</h3>
+          <p>Enter the admin password to view organisation analytics.</p>
+          <input type="password" id="adminPwd" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
+          <button onclick="adminLogin()">Access Dashboard</button>
+          <div class="adm-err" id="pwdErr">Incorrect password. Please try again.</div>
+          <div style="margin-top:.875rem;font-size:11px;color:var(--g400)">Default password: <strong>SMILE2024</strong></div>
+        </div>
+      </div>
+      <div id="adminDash" style="display:none">
+        <div class="adm-tabs">
+          <div class="atab on" onclick="showTab('overview')">Overview</div>
+          <div class="atab" onclick="showTab('gaps')">Skill Gaps</div>
+          <div class="atab" onclick="showTab('responses')">All Responses</div>
+          <div class="atab" onclick="showTab('setup')">Setup &amp; Config</div>
+        </div>
+        <div class="atab-p on" id="tab-overview">
+          <div class="kpi-grid">
+            <div class="kpi-card"><div class="kpi-n" id="kpi-tot">—</div><div class="kpi-l">Total assessments</div></div>
+            <div class="kpi-card"><div class="kpi-n" id="kpi-avg">—</div><div class="kpi-l">Avg overall readiness</div></div>
+            <div class="kpi-card"><div class="kpi-n" id="kpi-k">—</div><div class="kpi-l">Avg knowledge score</div></div>
+            <div class="kpi-card"><div class="kpi-n" id="kpi-mo">—</div><div class="kpi-l">This month</div></div>
+          </div>
+          <div class="chart-wrap"><div class="chart-t">Assessments by function</div><div class="bar-chart" id="funcChart"></div></div>
+          <div class="chart-wrap"><div class="chart-t">Score distribution by dimension</div><div class="bar-chart" id="scoreChart"></div></div>
+          <div class="chart-wrap"><div class="chart-t">Career level breakdown</div><div class="bar-chart" id="levelChart"></div></div>
+        </div>
+        <div class="atab-p" id="tab-gaps">
+          <div class="chart-wrap"><div class="chart-t">Top skill gaps across organisation</div><div class="bar-chart" id="gapChart"></div></div>
+          <div class="chart-wrap"><div class="chart-t">Average readiness score by function</div><div class="bar-chart" id="funcScoreChart"></div></div>
+          <div class="chart-wrap"><div class="chart-t">Aspiration trends</div><div class="bar-chart" id="aspirChart"></div></div>
+        </div>
+        <div class="atab-p" id="tab-responses">
+          <div style="margin-bottom:9px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:13px;color:var(--g500)">Latest 50 assessment responses</span>
+            <button class="btn btn-sky" style="padding:6px 13px;font-size:12px" onclick="loadAdminData()"><i class="ti ti-refresh" aria-hidden="true"></i> Refresh</button>
+          </div>
+          <div style="overflow-x:auto">
+            <table class="data-tbl" id="respTable">
+              <thead><tr><th>Date</th><th>Name</th><th>Role</th><th>Function</th><th>Level</th><th>Exp</th><th>Overall</th><th>K</th><th>S</th><th>A</th><th>Top Gap</th><th>Aspiration</th></tr></thead>
+              <tbody id="respBody"><tr><td colspan="12" class="no-data">Connect Google Sheets to see live data</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="atab-p" id="tab-setup">
+          <div class="setup-box">
+            <h4><i class="ti ti-brand-google" style="font-size:14px;vertical-align:-2px" aria-hidden="true"></i> Google Sheets Backend — 3 Steps (~10 minutes)</h4>
+            <ol>
+              <li>Go to <strong>script.google.com</strong> → New project → paste the script below</li>
+              <li><strong>Deploy → New deployment → Web App</strong> → "Anyone" can access → Deploy → copy URL</li>
+              <li>Paste the URL in the field below and click Save &amp; Test</li>
+            </ol>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-t">Apps Script — copy this entire block</div>
+            <div class="script-box" id="scriptBox">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(['Timestamp','Name','Role','Function','Experience','Level',
+        'Aspiration','Goal','Overall %','Knowledge %','Skills %','Attitude %',
+        'KPI 1','KPI 2','Motivations','Capabilities','Top Gap','Coach Summary']);
+      var h = sheet.getRange(1,1,1,18);
+      h.setBackground('#0369A1'); h.setFontColor('#FFFFFF'); h.setFontWeight('bold');
+    }
+    sheet.appendRow([data.timestamp||'',data.name||'',data.role||'',data.func||'',
+      data.exp||'',data.lev||'',data.aspire||'',data.goal||'',data.overall||'',
+      data.k_score||'',data.s_score||'',data.a_score||'',data.kpi1||'',data.kpi2||'',
+      data.motiv||'',data.caps||'',data.top_gap||'',data.coach_summary||'']);
+    return ContentService.createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:'error',message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+function doGet(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var data = sheet.getDataRange().getValues();
+    if (data.length <= 1) return ContentService.createTextOutput(JSON.stringify({rows:[]})).setMimeType(ContentService.MimeType.JSON);
+    var headers = data[0];
+    var rows = data.slice(1).map(function(row){
+      var obj={}; headers.forEach(function(h,i){obj[h]=row[i];}); return obj;
+    });
+    return ContentService.createTextOutput(JSON.stringify({rows:rows})).setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({rows:[],error:err.toString()})).setMimeType(ContentService.MimeType.JSON);
+  }
+}</div>
+            <button class="copy-script" onclick="copyScript()"><i class="ti ti-copy" style="font-size:12px;vertical-align:-1px" aria-hidden="true"></i> Copy Apps Script</button>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-t">Connect your Google Sheets Web App URL</div>
+            <div class="url-row"><input type="text" id="sheetsUrl" placeholder="https://script.google.com/macros/s/YOUR_ID/exec"><button onclick="saveSheetsUrl()">Save &amp; Test</button></div>
+            <div style="font-size:12px;color:var(--g400);margin-top:7px">Current: <span id="curUrl" style="font-family:monospace;color:var(--sky-d)">Not configured</span></div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart-t">Change admin password</div>
+            <div class="url-row"><input type="password" id="newPwd" placeholder="Enter new admin password"><button onclick="savePwd()">Update</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js"></script>
+<script>
+/* ================================================================
+   MY CAREER COMPASS v3.0 — Complete Frontend + Backend Fix
+   SMILE Academy · Sharda Motor Industries Limited
+   MIT Licence
+   Fixes: Observation 1 (personalisation), 2 (score methodology),
+          3 (complete Sheets payload), 4 (JD upload confirmation)
+   ================================================================ */
+
+// ── CONFIG ────────────────────────────────────────────────────────────────
+let SHEETS_URL = localStorage.getItem('cc_sheets_url') || 'YOUR_APPS_SCRIPT_URL_HERE';
+let ADMIN_PWD  = localStorage.getItem('cc_admin_pwd')  || 'SMILE2024';
+
+// ── SCORE METHODOLOGY (Observation 2) ─────────────────────────────────────
+// Formula: dimension score = avg(5 sliders) × 20 → 0-100
+// Overall  = K×0.35 + S×0.40 + A×0.25
+// This is computed client-side AND sent to AI for recalibration
+function computeScores(kv, sv, av) {
+  const avg = arr => arr.reduce((a,b)=>a+b,0) / arr.length;
+  const kRaw = avg(kv), sRaw = avg(sv), aRaw = avg(av);
+  const k = Math.round(kRaw * 20);
+  const s = Math.round(sRaw * 20);
+  const a = Math.round(aRaw * 20);
+  const overall = Math.round(k * 0.35 + s * 0.40 + a * 0.25);
+  return { k, s, a, overall, kRaw, sRaw, aRaw };
+}
+
+// Role-level benchmarks by function + career level
+// Required score thresholds: what this role demands
+const BENCHMARKS = {
+  mfg:      { operator:40, technician:50, engineer:55, senior:60, manager:65, dgm:70, head:75, cxo:80 },
+  quality:  { operator:45, technician:55, engineer:60, senior:65, manager:70, dgm:75, head:78, cxo:82 },
+  hr:       { operator:40, technician:45, engineer:55, senior:60, manager:65, dgm:70, head:75, cxo:82 },
+  finance:  { operator:40, technician:50, engineer:58, senior:63, manager:68, dgm:73, head:78, cxo:83 },
+  scm:      { operator:42, technician:52, engineer:57, senior:62, manager:67, dgm:72, head:76, cxo:80 },
+  maint:    { operator:45, technician:55, engineer:60, senior:65, manager:70, dgm:74, head:77, cxo:80 },
+  sales:    { operator:40, technician:45, engineer:55, senior:62, manager:68, dgm:73, head:78, cxo:82 },
+  strategy: { operator:45, technician:50, engineer:60, senior:67, manager:72, dgm:77, head:80, cxo:85 },
+  default:  { operator:40, technician:48, engineer:55, senior:60, manager:65, dgm:70, head:75, cxo:80 },
+};
+
+function getLevelKey(lev) {
+  const l = (lev||'').toLowerCase();
+  if (l.includes('shopfloor')||l.includes('operator')) return 'operator';
+  if (l.includes('technician')||l.includes('skilled')) return 'technician';
+  if (l.includes('engineer')||l.includes('executive')) return 'engineer';
+  if (l.includes('senior')||l.includes('team lead')) return 'senior';
+  if (l.includes('manager')||l.includes('agm')) return 'manager';
+  if (l.includes('dgm')||l.includes('sr. manager')) return 'dgm';
+  if (l.includes('head')||l.includes('gm')||l.includes('vp')) return 'head';
+  if (l.includes('cxo')||l.includes('director')) return 'cxo';
+  return 'manager';
+}
+
+function getRequiredScore(fk, lev) {
+  const bench = BENCHMARKS[fk] || BENCHMARKS.default;
+  return bench[getLevelKey(lev)] || 65;
+}
+
+// ── FUNCTION-AWARE FALLBACK PROFILES (9 functions) ────────────────────────
+// Observation 1 fix: coach() now uses name, aspire AND computed scores
+// so even the fallback is personalised
+const FB = {
+  mfg:{k:59,s:60,a:73,
+    coach:(n,a,sc)=>`${n}, your hands-on production knowledge and shop-floor ownership are strengths your plant already relies on — your Attitude score of ${sc.a}% reflects that accountability mindset. The most critical gap is data-driven problem solving: your Knowledge score of ${sc.k}% shows solid fundamentals, but translating that into OEE dashboards, Pareto analysis and MES data is what gets you to ${a||'the next level'}. Pick one real production problem this month, apply A3 or 8D, document the result — that habit accelerates careers faster than any classroom.`,
+    gaps:[{n:'OEE & production analytics',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Digital tools — MES / SAP PM',c:'Knowledge',cur:2,req:4,p:'Critical'},{n:'Lean / Six Sigma methods',c:'Knowledge',cur:3,req:5,p:'Moderate'},{n:'Cross-functional communication',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'People development skills',c:'Skill',cur:2,req:4,p:'Moderate'}],
+    strengths:['Shop-floor technical expertise','Production target ownership','Shift & team coordination','Safety discipline','Machine & process knowledge'],
+    dev:['Lean Six Sigma Green Belt — CII / BIS India','Digital manufacturing & MES tools','OEE-based decision making','Frontline leadership — IMT / NMIMS open'],
+    journey:{m3:{label:'Month 1–3',theme:'Build the data habit',items:['Complete OEE & analytics basics — CII online or PMTS','Attend a Kaizen / 5S workshop at plant level','Start a daily downtime root-cause log with countermeasures']},m6:{label:'Month 4–6',theme:'Lead a process improvement',items:['Run a structured A3 / 8D project end-to-end','Learn SAP PM / MES basics relevant to your plant','Present one measurable improvement at a plant review']},m9:{label:'Month 7–9',theme:'Strengthen people leadership',items:['Lead a cross-shift knowledge-sharing session monthly','Enrol in frontline leadership — IMT / NMIMS open','Formally mentor one junior technician with a development plan']},m12:{label:'Month 10–12',theme:'Position for promotion',items:['Document 3 improvements with before/after data','Apply for a cross-functional project or task-force role','Have a career conversation with your Plant Head backed by evidence']}}
+  },
+  quality:{k:65,s:58,a:74,
+    coach:(n,a,sc)=>`${n}, your quality mindset shows clearly — an Attitude score of ${sc.a}% reflects the discipline and customer orientation that makes great quality professionals. The critical shift for ${a||'your next level'} is moving from quality checker to quality strategist: your Skills score of ${sc.s}% shows execution strength, but translating defect data into P&L language is what earns a seat at leadership reviews. Start by building one cost-of-poor-quality report this quarter.`,
+    gaps:[{n:'Statistical process control — SPC',c:'Knowledge',cur:3,req:5,p:'Critical'},{n:'Business impact & COQ reporting',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Digital QMS / ERP systems',c:'Knowledge',cur:2,req:4,p:'Moderate'},{n:'Cross-functional stakeholder influence',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Customer-facing quality management',c:'Skill',cur:2,req:4,p:'Moderate'}],
+    strengths:['Quality standards & audit knowledge','Root cause analysis — 8D/Ishikawa','Documentation discipline','IATF/ISO awareness','Inspection accuracy'],
+    dev:['SPC & Minitab — NIQR / ASQ India','IATF 16949 internal auditor — BVC/DNV India','Six Sigma Green Belt — CII / KPMG India','Cost of quality & management reporting'],
+    journey:{m3:{label:'Month 1–3',theme:'Deepen quality analytics',items:['Complete SPC / Minitab basics — NIQR or ASQ India','Build one cost-of-poor-quality dashboard for your section','Study APQP / PPAP standards for your key customers']},m6:{label:'Month 4–6',theme:'Translate data to decisions',items:['Present a business-impact quality report to plant leadership','Lead a cross-functional quality improvement team','Complete IATF 16949 internal auditor training — BVC / DNV India']},m9:{label:'Month 7–9',theme:'Build strategic credibility',items:['Lead a supplier quality improvement project with a key vendor','Develop a quality culture module for shopfloor teams','Enrol in Six Sigma Green Belt — CII or KPMG India']},m12:{label:'Month 10–12',theme:'Position as quality leader',items:['Drive one quality transformation with documented P&L impact','Build a quality maturity roadmap for your function','Career conversation backed by measurable quality impact portfolio']}}
+  },
+  hr:{k:60,s:56,a:74,
+    coach:(n,a,sc)=>`${n}, your people orientation shows in your Attitude score of ${sc.a}% — that foundation of ownership and growth mindset is visible to leadership. The gap that unlocks ${a||'your next role'} is commercial confidence: your Knowledge score of ${sc.k}% and Skills score of ${sc.s}% show functional strength, but if you cannot show the P&L impact of attrition, succession risk, or a learning investment, you will always be positioned as support, not strategy. One analytics project in 90 days changes that perception.`,
+    gaps:[{n:'People analytics & HR data',c:'Skill',cur:2,req:4,p:'Critical'},{n:'AI & digital HR tools',c:'Knowledge',cur:2,req:4,p:'Critical'},{n:'Business & commercial acumen',c:'Knowledge',cur:3,req:5,p:'Moderate'},{n:'Change management leadership',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Executive-level communication',c:'Attitude',cur:3,req:5,p:'Moderate'}],
+    strengths:['Talent management & development','L&D program design','Stakeholder relationships','Coaching & facilitation','Succession planning'],
+    dev:['HR Analytics — SHRM / XLRI Executive / Coursera Wharton','AI-augmented HR & L&D design','Business case & ROI framing','Strategic HRBP capability'],
+    journey:{m3:{label:'Month 1–3',theme:'Close the analytics gap',items:['Enrol in HR Analytics — SHRM, XLRI Executive, or Coursera (Wharton)','Build one HR data dashboard — attrition / L&D ROI','Shadow a finance colleague on a business review']},m6:{label:'Month 4–6',theme:'Strengthen business partnering',items:['Present a business-impact case for one HR initiative','Run a cross-functional project as HR lead','Complete an AI-in-HR fundamentals course']},m9:{label:'Month 7–9',theme:'Raise strategic visibility',items:['Draft a workforce capability strategy note for your CHRO','Volunteer for a business transformation workstream','Begin ICF ACC coaching credential pathway']},m12:{label:'Month 10–12',theme:'Position for senior role',items:['Build a portfolio of 3 measurable HR impact stories with ROI','Activate thought leadership — NHRD / NHRDN events, SHRM India','Have a formal career conversation with evidence and a clear ask']}}
+  },
+  finance:{k:67,s:60,a:71,
+    coach:(n,a,sc)=>`${n}, your financial accuracy and process rigour are reflected in a Knowledge score of ${sc.k}% — that technical base is strong and respected. The gap that separates a good accountant from a valued finance leader is translating those numbers into business decisions: your Skills score of ${sc.s}% shows there is room to grow in business partnering and data storytelling. Those two capabilities will unlock ${a||'your aspirations'} — in India and globally.`,
+    gaps:[{n:'Finance business partnering',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Data storytelling & visualisation',c:'Skill',cur:2,req:5,p:'Critical'},{n:'FP&A & strategic finance',c:'Knowledge',cur:3,req:5,p:'Moderate'},{n:'Digital finance tools — Power BI / SAP',c:'Knowledge',cur:3,req:4,p:'Moderate'},{n:'Influencing without authority',c:'Attitude',cur:3,req:4,p:'Low'}],
+    strengths:['Financial accuracy & compliance','Management reporting & MIS','Cost accounting','Process adherence','Audit & statutory knowledge'],
+    dev:['Finance business partnering — IIM / ISB open programmes','Power BI & data visualisation — Microsoft Learn','FP&A and strategic finance — CIMA / CMA India','Executive communication skills'],
+    journey:{m3:{label:'Month 1–3',theme:'Build partnering confidence',items:['Attend one business review monthly — observe and ask questions','Complete Power BI or Tableau basics — Microsoft Learn / Udemy','Prepare one insight report monthly that goes beyond the numbers']},m6:{label:'Month 4–6',theme:'Deepen strategic finance',items:['Lead a cost optimisation analysis for one business unit','Complete FP&A or business finance — IIM Ahmedabad / CIMA','Present a recommendation — not just a data pack — to leadership']},m9:{label:'Month 7–9',theme:'Expand cross-functional influence',items:['Partner with one BU as embedded finance support for a quarter','Build a financial performance dashboard for operations leadership','Begin an executive communication or leadership presence program']},m12:{label:'Month 10–12',theme:'Position as finance leader',items:['Document 3 finance-led initiatives with measurable business impact','Propose a strategic finance improvement to your CFO','Career conversation with data portfolio and a specific ask']}}
+  },
+  scm:{k:62,s:57,a:68,
+    coach:(n,a,sc)=>`${n}, your operational reliability shows in your Attitude score of ${sc.a}% — ownership of delivery commitments is something supply chain leaders notice. The critical gap for ${a||'your next career level'} is digital supply chain literacy: your Knowledge score of ${sc.k}% reflects solid process understanding, but ERP proficiency, demand forecasting tools and visibility dashboards are now table stakes. Closing that digital gap differentiates you sharply from peers still working off spreadsheets.`,
+    gaps:[{n:'ERP / SAP supply chain — MM/SD',c:'Knowledge',cur:2,req:5,p:'Critical'},{n:'Demand forecasting & planning',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Supply chain risk & resilience',c:'Knowledge',cur:2,req:4,p:'Moderate'},{n:'Supplier performance management',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Cross-functional collaboration',c:'Attitude',cur:3,req:4,p:'Low'}],
+    strengths:['Logistics & dispatch coordination','Inventory awareness','Vendor negotiation basics','Operational scheduling','Compliance follow-through'],
+    dev:['SAP MM / SD supply chain — NIIT / Siemens India','Demand planning & S&OP — Coursera','APICS CSCP / CPIM — CII India delivery','Supply chain risk management'],
+    journey:{m3:{label:'Month 1–3',theme:'Upskill on digital SCM',items:['Complete SAP MM basics — NIIT, Siemens, or vendor-led online','Enrol in supply chain analytics — Coursera or APICS','Map one end-to-end supply chain process digitally']},m6:{label:'Month 4–6',theme:'Build planning capability',items:['Run a demand forecasting exercise for one product category','Lead a supplier performance review using data and scorecard','Present a supply chain risk analysis to your Supply Chain Head']},m9:{label:'Month 7–9',theme:'Deepen strategic SCM',items:['Join a cross-functional product launch team as SCM lead','Begin APICS CSCP or CPIM certification — CII India delivery','Build a supplier scorecard and present findings to leadership']},m12:{label:'Month 10–12',theme:'Position for leadership',items:['Drive one supply chain cost-saving initiative end to end','Document impact with before/after data as a business case','Career conversation backed by your SCM improvement portfolio']}}
+  },
+  maint:{k:64,s:61,a:71,
+    coach:(n,a,sc)=>`${n}, your technical depth is reflected in a Knowledge score of ${sc.k}% — plants run because of engineers like you. The gap to close for ${a||'your next role'} is shifting from reactive to predictive: your Skills score of ${sc.s}% shows solid execution, but CBM tools, digital asset management and MTBF-based planning are now expected. The engineer who combines hands-on expertise with data-driven maintenance planning gets to lead the function.`,
+    gaps:[{n:'Predictive / condition-based maintenance',c:'Knowledge',cur:2,req:4,p:'Critical'},{n:'CMMS / digital maintenance tools',c:'Knowledge',cur:2,req:4,p:'Critical'},{n:'Reliability engineering — RCM / FMEA',c:'Knowledge',cur:3,req:5,p:'Moderate'},{n:'Cross-functional project leadership',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Cost & budget management',c:'Skill',cur:2,req:4,p:'Moderate'}],
+    strengths:['Mechanical / electrical fault diagnosis','Breakdown management','Safety compliance','Spare parts knowledge','Shift maintenance execution'],
+    dev:['Predictive maintenance & CBM — SKF India / Emerson','CMMS / SAP PM implementation','Reliability Centered Maintenance — RCM','Project management — PMP / Prince2 Foundation'],
+    journey:{m3:{label:'Month 1–3',theme:'Shift to predictive mindset',items:['Complete CBM / vibration analysis basics — SKF India / Emerson','Explore CMMS tools — SAP PM, Maximo or eMaint online','Track MTBF data for your section and build a simple dashboard']},m6:{label:'Month 4–6',theme:'Build digital maintenance skills',items:['Implement one CBM point for a critical asset in your plant','Complete FMEA training and apply to your top 3 critical machines','Present a maintenance cost vs downtime analysis to Plant Head']},m9:{label:'Month 7–9',theme:'Lead reliability improvement',items:['Run an RCM review on one critical equipment class','Join a plant-level energy or productivity improvement team','Enrol in project management basics — PMP / Prince2 Foundation']},m12:{label:'Month 10–12',theme:'Position as maintenance leader',items:['Develop a PM-to-predictive migration roadmap for your section','Document cost savings from improvements with before/after data','Career conversation with technical and leadership capability evidence']}}
+  },
+  sales:{k:61,s:59,a:69,
+    coach:(n,a,sc)=>`${n}, your customer drive is visible — an Attitude score of ${sc.a}% reflects the commercial orientation and persistence that customers remember long after the deal. The critical gap for ${a||'your next career level'} is data-driven sales planning: your Skills score of ${sc.s}% shows solid execution, but great sales leaders back pipeline decisions with CRM analytics, market forecasting and financial models. Start with one CRM dashboard this quarter — it is the fastest signal to leadership that you are ready for the next level.`,
+    gaps:[{n:'CRM data & pipeline analytics',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Data-driven sales planning',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Key account management methodology',c:'Knowledge',cur:3,req:4,p:'Moderate'},{n:'Commercial negotiation skills',c:'Skill',cur:3,req:5,p:'Moderate'},{n:'Strategic market intelligence',c:'Knowledge',cur:2,req:4,p:'Moderate'}],
+    strengths:['Customer relationship building','Consultative selling','Product knowledge','Persistence & resilience','Commercial drive'],
+    dev:['CRM analytics — Salesforce / Zoho certification','IIM Calcutta Executive Sales Management','Miller Heiman Strategic Selling (global)','LinkedIn Sales Navigator advanced'],
+    journey:{m3:{label:'Month 1–3',theme:'Master CRM & pipeline data',items:['Complete Salesforce or Zoho CRM certification (online)','Build a weekly pipeline analytics dashboard for your accounts','Enrol in SPIN Selling or consultative selling program']},m6:{label:'Month 4–6',theme:'Elevate account strategy',items:['Apply Miller Heiman account planning to top 3 accounts','Present a data-backed quarterly business review to key customers','Complete IIM Calcutta Executive Sales Management program']},m9:{label:'Month 7–9',theme:'Build market intelligence',items:['Develop a competitive market intelligence report for your vertical','Lead a cross-functional sales + product + operations planning meeting','Begin a commercial negotiation skills program']},m12:{label:'Month 10–12',theme:'Position for sales leadership',items:['Document 3 account wins with pipeline-to-revenue data stories','Mentor a junior sales executive with a structured 90-day plan','Career conversation with revenue impact evidence']}}
+  },
+  strategy:{k:62,s:57,a:70,
+    coach:(n,a,sc)=>`${n}, your systems thinking is a genuine differentiator — a Knowledge score of ${sc.k}% reflects the analytical depth that strategy roles demand. The most critical gap for ${a||'your career goals'} is translating that insight into organisational action: your Skills score of ${sc.s}% signals that stakeholder management and change leadership need strengthening. Build one high-visibility cross-functional project leadership experience in the next 6 months — nothing accelerates strategic positioning faster.`,
+    gaps:[{n:'Executive stakeholder management',c:'Skill',cur:2,req:5,p:'Critical'},{n:'Change leadership capability',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Financial modelling & scenario planning',c:'Knowledge',cur:3,req:5,p:'Moderate'},{n:'Strategy communication & storytelling',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Org design & workforce planning',c:'Knowledge',cur:2,req:4,p:'Moderate'}],
+    strengths:['Strategic frameworks & analysis','Intellectual curiosity','Data synthesis & insight generation','Long-term orientation','Workshop facilitation'],
+    dev:['ISB Certificate in Business Strategy','McKinsey Forward (global — free)','Financial modelling — IIM Bangalore / Coursera Wharton','Executive communication & presence program'],
+    journey:{m3:{label:'Month 1–3',theme:'Build strategic credibility',items:['Complete ISB or IIM Bangalore open strategy programme','Start McKinsey Forward (free global leadership programme)','Lead one cross-functional analysis and present to senior leadership']},m6:{label:'Month 4–6',theme:'Deepen financial & scenario skills',items:['Complete financial modelling basics — Coursera Wharton or IIM open','Build one scenario planning model for a current business challenge','Co-lead a strategic planning workshop with your leadership team']},m9:{label:'Month 7–9',theme:'Elevate influence & presence',items:['Volunteer for a business transformation or M&A workstream','Complete an executive communication / presence coaching program','Publish one internal thought-leadership note or management brief']},m12:{label:'Month 10–12',theme:'Position for strategic leadership',items:['Lead a complete strategy-to-execution initiative from brief to board','Build an external perspective — CII / NASSCOM industry conference','Career conversation with 3 documented strategy-led impact examples']}}
+  },
+  default:{k:60,s:58,a:70,
+    coach:(n,a,sc)=>`${n}, your overall readiness score of ${sc.overall}% reflects a solid functional foundation — your Attitude score of ${sc.a}% in particular shows the ownership and growth mindset that organisations value. The most important step for ${a||'your career goals'} is being deliberate: your Knowledge at ${sc.k}% and Skills at ${sc.s}% show where the priority gaps lie. Identify the two or three capabilities your target role requires and close them with time-bound action — this journey is designed to guide exactly that.`,
+    gaps:[{n:'Strategic thinking & planning',c:'Skill',cur:2,req:4,p:'Critical'},{n:'Digital tools & literacy',c:'Knowledge',cur:2,req:4,p:'Critical'},{n:'Data-driven decision making',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Communication & stakeholder influence',c:'Skill',cur:3,req:4,p:'Moderate'},{n:'Leadership capability',c:'Attitude',cur:3,req:4,p:'Low'}],
+    strengths:['Functional domain knowledge','Work ethic & reliability','Team collaboration','Process adherence','Organisational commitment'],
+    dev:['Strategic thinking & business acumen','Digital tools relevant to your function','Communication & influencing skills — IIM / XLRI open','Leadership fundamentals program'],
+    journey:{m3:{label:'Month 1–3',theme:'Identify and close critical gaps',items:['Complete one certification in your highest-priority skill area','Find a mentor in your aspired function inside or outside your org','Start a weekly learning log — 15 minutes of reflection every Friday']},m6:{label:'Month 4–6',theme:'Apply and demonstrate growth',items:['Lead a small project outside your usual responsibility','Present one improvement idea to your manager with data to support it','Join a cross-functional team or company-level task force']},m9:{label:'Month 7–9',theme:'Raise your visibility',items:['Volunteer to train or coach a junior colleague formally','Attend an industry conference — NASSCOM, CII, SHRM India, or similar','Build a short portfolio of 2 measurable contributions you led']},m12:{label:'Month 10–12',theme:'Position for next opportunity',items:['Document your development journey with concrete before/after evidence','Update your professional profile and communicate your growth','Have a structured career conversation with your manager — with evidence']}}
+  }
+};
+
+// ── KSA SLIDER CONFIG ─────────────────────────────────────────────────────
+const SL={
+  mfg:{k:[{id:'k1',n:'Production processes & systems',v:4},{id:'k2',n:'Quality & safety standards',v:3},{id:'k3',n:'Machine & equipment knowledge',v:4},{id:'k4',n:'Lean / continuous improvement',v:2},{id:'k5',n:'Digital tools & MES / ERP',v:2}],s:[{id:'s1',n:'Production problem solving',v:3},{id:'s2',n:'Team supervision & shift mgmt',v:3},{id:'s3',n:'OEE & data interpretation',v:2},{id:'s4',n:'Cross-functional coordination',v:3},{id:'s5',n:'Root cause analysis — 8D/A3',v:3}],a:[{id:'a1',n:'Safety ownership',v:4},{id:'a2',n:'Accountability for targets',v:4},{id:'a3',n:'Team motivation',v:3},{id:'a4',n:'Adaptability to change',v:3},{id:'a5',n:'Continuous improvement mindset',v:3}]},
+  quality:{k:[{id:'k1',n:'Quality systems & standards',v:4},{id:'k2',n:'Measurement & inspection techniques',v:4},{id:'k3',n:'Statistical methods / SPC',v:2},{id:'k4',n:'IATF / ISO / BIS standards',v:3},{id:'k5',n:'Digital QMS tools',v:2}],s:[{id:'s1',n:'Root cause analysis — 8D/Ishikawa',v:4},{id:'s2',n:'Audit & documentation',v:4},{id:'s3',n:'Supplier quality management',v:3},{id:'s4',n:'Data analysis & business reporting',v:2},{id:'s5',n:'Cross-team communication',v:3}],a:[{id:'a1',n:'Attention to detail',v:5},{id:'a2',n:'Process discipline',v:4},{id:'a3',n:'Customer orientation',v:3},{id:'a4',n:'Ownership of quality outcomes',v:4},{id:'a5',n:'Collaboration & influence',v:3}]},
+  hr:{k:[{id:'k1',n:'HR domain expertise',v:4},{id:'k2',n:'Business & commercial acumen',v:3},{id:'k3',n:'People analytics & HR data',v:2},{id:'k4',n:'Digital HR tools / HRIS / LMS',v:2},{id:'k5',n:'Org design & workforce planning',v:3}],s:[{id:'s1',n:'Stakeholder management',v:4},{id:'s2',n:'Program design & delivery',v:4},{id:'s3',n:'Coaching & facilitation',v:4},{id:'s4',n:'Data-driven HR decisions',v:2},{id:'s5',n:'Change & project leadership',v:3}],a:[{id:'a1',n:'Ownership & accountability',v:4},{id:'a2',n:'Growth mindset',v:4},{id:'a3',n:'Strategic orientation',v:3},{id:'a4',n:'Executive presence',v:3},{id:'a5',n:'Learning agility',v:4}]},
+  finance:{k:[{id:'k1',n:'Financial accounting & reporting',v:4},{id:'k2',n:'Management accounting / MIS',v:4},{id:'k3',n:'FP&A & strategic finance',v:3},{id:'k4',n:'Digital finance tools / ERP',v:3},{id:'k5',n:'Regulatory & compliance — ICAI/Ind AS',v:4}],s:[{id:'s1',n:'Data analysis & financial modelling',v:3},{id:'s2',n:'Finance business partnering',v:2},{id:'s3',n:'Presentation & data storytelling',v:2},{id:'s4',n:'Cost optimisation & project costing',v:3},{id:'s5',n:'Stakeholder communication',v:3}],a:[{id:'a1',n:'Accuracy & process rigour',v:5},{id:'a2',n:'Ownership of financial outcomes',v:4},{id:'a3',n:'Commercial curiosity',v:3},{id:'a4',n:'Collaboration with business',v:3},{id:'a5',n:'Learning agility',v:3}]},
+  scm:{k:[{id:'k1',n:'Supply chain & logistics processes',v:4},{id:'k2',n:'Inventory & warehouse management',v:3},{id:'k3',n:'Demand planning & forecasting',v:2},{id:'k4',n:'ERP / SAP supply chain modules',v:2},{id:'k5',n:'Supplier development & sourcing',v:3}],s:[{id:'s1',n:'Logistics & dispatch coordination',v:4},{id:'s2',n:'Vendor negotiation & contracting',v:3},{id:'s3',n:'Supply chain risk management',v:2},{id:'s4',n:'Data analysis for SCM',v:2},{id:'s5',n:'Cross-functional collaboration',v:3}],a:[{id:'a1',n:'Reliability & follow-through',v:4},{id:'a2',n:'Ownership of delivery commitments',v:4},{id:'a3',n:'Adaptability to supply disruption',v:3},{id:'a4',n:'Commercial orientation',v:3},{id:'a5',n:'Continuous improvement mindset',v:3}]},
+  maint:{k:[{id:'k1',n:'Mechanical / electrical systems',v:4},{id:'k2',n:'Preventive maintenance systems',v:4},{id:'k3',n:'Predictive / CBM techniques',v:2},{id:'k4',n:'CMMS / digital maintenance tools',v:2},{id:'k5',n:'Reliability engineering — RCM/FMEA',v:3}],s:[{id:'s1',n:'Breakdown diagnosis & repair',v:4},{id:'s2',n:'Preventive maintenance planning',v:3},{id:'s3',n:'MTTR / MTBF data analysis',v:2},{id:'s4',n:'Spare parts & budget management',v:3},{id:'s5',n:'Cross-functional project coordination',v:3}],a:[{id:'a1',n:'Safety first mindset',v:5},{id:'a2',n:'Accountability for uptime',v:4},{id:'a3',n:'Proactive problem identification',v:3},{id:'a4',n:'Collaboration with production',v:3},{id:'a5',n:'Continuous improvement drive',v:3}]},
+  sales:{k:[{id:'k1',n:'Sales process & pipeline management',v:4},{id:'k2',n:'Customer & market intelligence',v:3},{id:'k3',n:'Product & solution knowledge',v:4},{id:'k4',n:'Commercial negotiation',v:3},{id:'k5',n:'CRM tools — Salesforce / Zoho',v:2}],s:[{id:'s1',n:'Consultative selling',v:4},{id:'s2',n:'Proposal & presentation',v:3},{id:'s3',n:'Key account management',v:3},{id:'s4',n:'Data-driven sales planning',v:2},{id:'s5',n:'Cross-functional coordination',v:3}],a:[{id:'a1',n:'Customer obsession',v:4},{id:'a2',n:'Resilience & persistence',v:4},{id:'a3',n:'Commercial drive',v:4},{id:'a4',n:'Relationship orientation',v:3},{id:'a5',n:'Adaptability to market change',v:3}]},
+  strategy:{k:[{id:'k1',n:'Strategy frameworks — PESTLE/Porter/BCG',v:4},{id:'k2',n:'Financial modelling & scenario planning',v:3},{id:'k3',n:'Industry & competitive intelligence',v:3},{id:'k4',n:'Org design principles',v:2},{id:'k5',n:'Business case development',v:3}],s:[{id:'s1',n:'Executive stakeholder management',v:2},{id:'s2',n:'Strategic storytelling & communication',v:3},{id:'s3',n:'Data synthesis & insight generation',v:4},{id:'s4',n:'Change leadership',v:2},{id:'s5',n:'Workshop facilitation',v:3}],a:[{id:'a1',n:'Systems thinking',v:4},{id:'a2',n:'Intellectual curiosity',v:4},{id:'a3',n:'Ambiguity tolerance',v:3},{id:'a4',n:'Long-term orientation',v:4},{id:'a5',n:'Collaborative influence',v:3}]},
+  default:{k:[{id:'k1',n:'Functional domain expertise',v:4},{id:'k2',n:'Business & commercial awareness',v:3},{id:'k3',n:'Data & analytics literacy',v:2},{id:'k4',n:'Digital tools & technology',v:2},{id:'k5',n:'Industry & market knowledge',v:3}],s:[{id:'s1',n:'Communication & presentation',v:4},{id:'s2',n:'Problem solving & critical thinking',v:3},{id:'s3',n:'Team leadership',v:3},{id:'s4',n:'Project planning & execution',v:3},{id:'s5',n:'Stakeholder management',v:2}],a:[{id:'a1',n:'Ownership & accountability',v:4},{id:'a2',n:'Growth mindset',v:4},{id:'a3',n:'Adaptability to change',v:3},{id:'a4',n:'Collaboration',v:4},{id:'a5',n:'Learning agility',v:3}]}
+};
+
+// ── RUNTIME STATE ─────────────────────────────────────────────────────────
+let curScreen=1, lastResult=null, lastMeta={}, lastScores={};
+let jdExtracted='', kpiExtracted='', jdFileName='', kpiFileName='';
+const MAX_CHIPS=4, MIN_CHIPS=1;
+
+// ── UTILITIES ─────────────────────────────────────────────────────────────
+const fkey=()=>{const v=document.getElementById('v_func').value;return SL[v]?v:'default';};
+const gv=id=>{const el=document.getElementById(id);return parseInt(el&&el.value||3);};
+function showToast(m,d=3000){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+
+// ── CHIP TOGGLE min 1 / max 4 ─────────────────────────────────────────────
+function tog(el){
+  const c=el.closest('.chips');
+  const sel=c.querySelectorAll('.chip.on');
+  if(el.classList.contains('on')){
+    if(sel.length<=MIN_CHIPS){showToast('Please keep at least 1 option selected.');return;}
+    el.classList.remove('on');
+  }else{
+    if(sel.length>=MAX_CHIPS){showToast('You can select up to 4 options.');return;}
+    el.classList.add('on');
+  }
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+function go(n){
+  document.getElementById('sc'+curScreen).classList.remove('on');
+  document.getElementById('sc'+n).classList.add('on');
+  ['ps1','ps2','ps3','ps4'].forEach((id,i)=>{
+    const el=document.getElementById(id);el.classList.remove('active','done');
+    if(i+1===n)el.classList.add('active');else if(i+1<n)el.classList.add('done');
+  });
+  curScreen=n;window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── SLIDERS ───────────────────────────────────────────────────────────────
+function buildSliders(){
+  const cfg=SL[fkey()];
+  ['k','s','a'].forEach(t=>{
+    const el=document.getElementById(t+'_sl');if(!el)return;
+    el.innerHTML=cfg[t].map(d=>`<div class="srow"><div class="srow-top"><span class="srow-n">${d.n}</span><span class="srow-v" id="lv_${d.id}">${d.v}/5</span></div><input type="range" min="1" max="5" step="1" value="${d.v}" id="${d.id}" oninput="document.getElementById('lv_${d.id}').textContent=this.value+'/5'"></div>`).join('');
+  });
+}
+function onFuncChange(){buildSliders();}
+document.addEventListener('DOMContentLoaded',buildSliders);
+
+// ── SCORE METHODOLOGY TOGGLE ──────────────────────────────────────────────
+function toggleMethod(){
+  const body=document.getElementById('methodBody');
+  const arrow=document.getElementById('methodArrow');
+  const open=body.style.display==='block';
+  body.style.display=open?'none':'block';
+  arrow.textContent=open?'▼ Show':'▲ Hide';
+}
+
+// ── FILE UPLOAD (Observation 4 fix: full confirmation + stored state) ─────
+async function handleUpload(type,input){
+  const file=input.files[0];if(!file)return;
+  const statusEl=document.getElementById(type+'Stat');
+  const previewEl=document.getElementById(type+'Prev');
+  statusEl.className='fstatus proc';
+  statusEl.textContent=`Reading file: ${file.name} (${Math.round(file.size/1024)} KB)...`;
+  previewEl.style.display='none';
+
+  // Store filename for Sheets logging (Observation 4)
+  if(type==='jd') jdFileName=file.name;
+  else kpiFileName=file.name;
+
+  try{
+    let text='';
+    const ext=file.name.split('.').pop().toLowerCase();
+    if(['txt','csv'].includes(ext)){
+      text=await file.text();
+    }else{
+      const buf=await new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=()=>rej();r.readAsArrayBuffer(file);});
+      const bytes=new Uint8Array(buf);let raw='';
+      for(let i=0;i<bytes.length;i++){const c=bytes[i];if(c>=32&&c<127)raw+=String.fromCharCode(c);else if(c===10||c===13)raw+=' ';}
+      const words=raw.match(/[a-zA-Z][a-zA-Z0-9\s,.:;%\-\/&()]{4,}/g)||[];
+      text=words.join(' ').substring(0,3000);
+    }
+    if(text.trim().length<20)throw new Error('no text');
+
+    statusEl.textContent=`AI is extracting information from ${file.name}...`;
+    const prompt=type==='jd'
+      ?`Extract job responsibilities, required competencies and role expectations from this text. Return a clean 3-5 sentence summary. Text: ${text.substring(0,1500)}`
+      :`Extract key performance indicators or goals from this text. List the top 3-5 KPIs as short phrases, one per line. Text: ${text.substring(0,1500)}`;
+
+    let extracted=text.substring(0,400);
+    try{
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:300,messages:[{role:'user',content:prompt}]})});
+      const d=await resp.json();
+      extracted=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').trim()||extracted;
+    }catch(e){}
+
+    if(type==='jd'){jdExtracted=extracted;document.getElementById('v_jd').value=extracted.substring(0,600);}
+    else{kpiExtracted=extracted;const lines=extracted.split('\n').filter(l=>l.trim());if(lines[0])document.getElementById('v_kpi1').value=lines[0].substring(0,80);if(lines[1])document.getElementById('v_kpi2').value=lines[1].substring(0,80);}
+
+    // Observation 4 fix: clear success message showing file is stored
+    statusEl.className='file-status ok';
+    statusEl.innerHTML=`<strong>✓ File stored:</strong> ${file.name} &nbsp;·&nbsp; Extracted ${extracted.length} characters &nbsp;·&nbsp; <em>Content is being used by AI for your personalised assessment</em>`;
+
+    // Show upload confirmation panel (Observation 4 fix)
+    const confirmEl = document.getElementById(type+'Confirm');
+    const titleEl   = document.getElementById(type+'ConfirmTitle');
+    const charEl    = document.getElementById(type+'CharCount');
+    const fnEl      = document.getElementById(type==='jd'?'jdFileName':'kpiFileName2');
+    if(confirmEl){ confirmEl.style.display='flex'; }
+    if(titleEl)  { titleEl.textContent = type==='jd' ? 'JD: '+file.name+' — processed' : 'KPI: '+file.name+' — processed'; }
+    if(charEl)   { charEl.textContent  = extracted.length; }
+    if(fnEl)     { fnEl.textContent    = file.name; }
+    previewEl.style.display='block';
+    previewEl.textContent='Preview: '+extracted.substring(0,200)+(extracted.length>200?'...':'');
+  }catch(err){
+    statusEl.className='fstatus err';
+    statusEl.textContent='⚠ Could not read this file. Please paste the content manually below.';
+  }
+}
+
+// ── GENERATE (Observations 1, 2, 3 all fixed here) ────────────────────────
+async function generate(){
+  const fk=fkey();
+  const name=document.getElementById('v_name').value||'You';
+  const role=document.getElementById('v_role').value||'Professional';
+  const funcEl=document.getElementById('v_func');
+  const func=funcEl.options[funcEl.selectedIndex].text||'Not specified';
+  const exp=document.getElementById('v_exp').value||'';
+  const lev=document.getElementById('v_lev').value||'';
+  const aspire=document.getElementById('v_aspire').value||'';
+  const goal=document.getElementById('v_goal').value||'';
+  const jd=(jdExtracted||document.getElementById('v_jd').value||'').substring(0,600);
+  const kpi1=document.getElementById('v_kpi1').value||'';
+  const kpi2=document.getElementById('v_kpi2').value||'';
+  const hard=document.getElementById('v_hard').value||'';
+  const wish=document.getElementById('v_wish').value||'';
+  const motiv=[...document.querySelectorAll('#chips1 .chip.on')].map(c=>c.textContent).join(', ');
+  const caps=[...document.querySelectorAll('#chips2 .chip.on')].map(c=>c.textContent).join(', ');
+  const cfg=SL[fk];
+  const kv=cfg.k.map(d=>gv(d.id));
+  const sv=cfg.s.map(d=>gv(d.id));
+  const av=cfg.a.map(d=>gv(d.id));
+
+  // Observation 2 fix: compute scores client-side with documented formula
+  const sc=computeScores(kv,sv,av);
+  const reqScore=getRequiredScore(fk,lev);
+  lastScores=sc;
+  lastMeta={name,role,func,exp,lev,aspire,sc,fk};
+
+  go(4);
+  document.getElementById('loadView').style.display='block';
+  document.getElementById('resView').style.display='none';
+
+  const steps=['Analysing your role and JD','Mapping required competencies','Scoring your KSA profile','Identifying critical gaps','Designing your 12-month journey','Adding India + global context'];
+  const lsEl=document.getElementById('loadSteps');
+  lsEl.innerHTML=steps.map((s,i)=>`<div class="lstep" id="ls${i}">${s}</div>`).join('');
+  let li=0;
+  const lt=setInterval(()=>{if(li>0)document.getElementById('ls'+(li-1)).className='lstep done';if(li<steps.length){document.getElementById('ls'+li).className='lstep active';li++;}},900);
+
+  // Observation 1 fix: enriched prompt with ALL data points + pre-computed scores
+  // Observation 2 fix: include methodology context so AI can recalibrate
+  const prompt=`You are a warm, direct career coach with deep knowledge of India's professional development landscape AND global best practices. Analyse this unique individual profile and return a fully personalised skill gap analysis and 12-month learning journey. Every output MUST be specific to this person — never generic.
+
+CRITICAL INSTRUCTION 1: Blend GLOBAL and INDIAN context. Reference real certifications specific to the function: SHRM, XLRI, IIM open programmes, CII, NIQR, NIPM, BIS, APICS India, NIIT, Coursera (Wharton/Michigan), NASSCOM, LinkedIn Learning.
+
+CRITICAL INSTRUCTION 2: The coach insight MUST reference this person's ACTUAL scores (K:${sc.k}%, S:${sc.s}%, A:${sc.a}%) and their SPECIFIC aspiration (${aspire||'next level'}). Do NOT produce a generic narrative. Each person's output must be unique to their data.
+
+CRITICAL INSTRUCTION 3: Gap analysis must compare their actual slider ratings against the role-required level for function=${func} at level=${lev}. Required benchmark = ${reqScore}% for this role.
+
+COMPLETE PROFILE:
+Name: ${name} | Role: ${role} | Function: ${func}
+Experience: ${exp} | Level: ${lev} | Aspiration: ${aspire} | Goal: ${goal}
+Motivations: ${motiv} | Capability priorities: ${caps}
+${jd?'JD / Role description: '+jd:''}
+${kpi1?'KPI 1: '+kpi1:''}${kpi2?' | KPI 2: '+kpi2:''}
+${kpiExtracted?'Extracted KPIs from uploaded file: '+kpiExtracted.substring(0,200):''}
+Challenge: ${hard.substring(0,250)} | Capability wish: ${wish.substring(0,250)}
+JD file uploaded: ${jdFileName||'No file — typed input used'}
+KPI file uploaded: ${kpiFileName||'No file — typed input used'}
+
+PRE-COMPUTED KSA SCORES (use as baseline, recalibrate based on JD and role requirements):
+Knowledge: ${sc.k}% (raw avg: ${sc.kRaw.toFixed(2)}/5) — ${cfg.k.map((d,i)=>d.n+'='+kv[i]).join(', ')}
+Skills: ${sc.s}% (raw avg: ${sc.sRaw.toFixed(2)}/5) — ${cfg.s.map((d,i)=>d.n+'='+sv[i]).join(', ')}
+Attitude: ${sc.a}% (raw avg: ${sc.aRaw.toFixed(2)}/5) — ${cfg.a.map((d,i)=>d.n+'='+av[i]).join(', ')}
+Client-computed Overall: ${sc.overall}% (K×35% + S×40% + A×25%)
+Role benchmark required: ${reqScore}% for ${lev} in ${func}
+Readiness vs benchmark: ${sc.overall>=reqScore?'MEETING ('+((sc.overall-reqScore))+'% above)':'BELOW ('+((reqScore-sc.overall))+'% gap to benchmark)'}
+
+SCORE METHODOLOGY (so your recalibration is consistent):
+- Each dimension score = average of 5 sliders × 20
+- Overall = K×0.35 + S×0.40 + A×0.25
+- You may adjust scores ±10 based on JD complexity and role expectations
+- Gap = required level minus current level for each competency
+
+Return ONLY valid JSON, no markdown, no code fences:
+{"overall":<0-100>,"k_score":<0-100>,"s_score":<0-100>,"a_score":<0-100>,"coach":"<2-3 sentences SPECIFIC to ${name}: reference their ACTUAL scores, their SPECIFIC aspiration '${aspire}', and their function '${func}'. Affirm one real specific strength, name the most critical gap, give one energising action. Warm, direct, business-focused. NEVER generic.>","gaps":[{"n":"<competency name>","c":"Knowledge|Skill|Attitude","cur":<1-5>,"req":<1-5>,"p":"Critical|Moderate|Low"}],"strengths":["<5 specific phrases for this person's function and level>"],"dev":["<4 development areas with named Indian AND global certifications>"],"journey":{"m3":{"label":"Month 1–3","theme":"<4-word theme specific to ${func}>","items":["<specific action with named cert>","<specific action>","<specific action>"]},"m6":{"label":"Month 4–6","theme":"<4-word theme>","items":["<action>","<action>","<action>"]},"m9":{"label":"Month 7–9","theme":"<4-word theme>","items":["<action>","<action>","<action>"]},"m12":{"label":"Month 10–12","theme":"<4-word theme>","items":["<action>","<action>","<action>"]}}}`;
+
+  let r=null;
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1400,messages:[{role:'user',content:prompt}]})});
+    const d=await resp.json();
+    const raw=(d.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    r=JSON.parse(raw.replace(/```json|```/g,'').trim());
+  }catch(e){r=null;}
+
+  // Observation 1 fix: fallback is now personalised using actual computed scores
+  if(!r){
+    const fb=FB[fk]||FB.default;
+    r={
+      overall:sc.overall,  // Use ACTUAL computed scores, not static fallback
+      k_score:sc.k,
+      s_score:sc.s,
+      a_score:sc.a,
+      coach:fb.coach(name,aspire,sc), // Pass actual scores to coach template
+      gaps:fb.gaps,strengths:fb.strengths,dev:fb.dev,journey:fb.journey
+    };
+  }
+
+  clearInterval(lt);
+  steps.forEach((_,i)=>{const el=document.getElementById('ls'+i);if(el)el.className='lstep done';});
+  lastResult=r;
+
+  // Observation 3 fix: complete Sheets payload with all 30+ fields
+  sendToSheets({
+    timestamp:new Date().toISOString(),
+    name,role,func,exp,lev,aspire,goal,motiv,caps,
+    overall:r.overall,k_score:r.k_score,s_score:r.s_score,a_score:r.a_score,
+    // Individual KSA slider values (all 15)
+    k1:kv[0],k2:kv[1],k3:kv[2],k4:kv[3],k5:kv[4],
+    s1:sv[0],s2:sv[1],s3:sv[2],s4:sv[3],s5:sv[4],
+    a1:av[0],a2:av[1],a3:av[2],a4:av[3],a5:av[4],
+    // Computed scores
+    k_raw:sc.kRaw.toFixed(2),s_raw:sc.sRaw.toFixed(2),a_raw:sc.aRaw.toFixed(2),
+    client_overall:sc.overall,req_benchmark:reqScore,
+    readiness_vs_benchmark:sc.overall>=reqScore?'Meeting':'Below',
+    // Inputs
+    kpi1,kpi2,
+    jd_text:jd.substring(0,500),
+    jd_file:jdFileName||'typed',
+    kpi_file:kpiFileName||'typed',
+    challenge:hard.substring(0,200),
+    wish:wish.substring(0,200),
+    // Gaps summary
+    top_gap:r.gaps?.[0]?.n||'',
+    gap2:r.gaps?.[1]?.n||'',
+    gap3:r.gaps?.[2]?.n||'',
+    critical_gap_count:(r.gaps||[]).filter(g=>g.p==='Critical').length,
+    coach_summary:(r.coach||'').substring(0,300),
+    // AI source flag
+    ai_generated: r.overall!==sc.overall ? 'AI' : 'Fallback'
+  });
+
+  renderResults(r,lastMeta,sc,cfg,kv,sv,av);
+}
+
+// ── RENDER RESULTS ────────────────────────────────────────────────────────
+function renderResults(r,meta,sc,cfg,kv,sv,av){
+  document.getElementById('loadView').style.display='none';
+  document.getElementById('resView').style.display='block';
+
+  document.getElementById('res_av').textContent=(meta.name||'U').split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  document.getElementById('res_nm').textContent=meta.name;
+  document.getElementById('rm_role').textContent=meta.role;
+  document.getElementById('rm_func').textContent=meta.func;
+  document.getElementById('rm_exp').textContent=meta.exp;
+  document.getElementById('coachMsg').textContent=r.coach;
+
+  const ss=(ni,fi,v)=>{document.getElementById(ni).textContent=v+'%';setTimeout(()=>{document.getElementById(fi).style.width=v+'%';},200);};
+  ss('sn0','sf0',r.overall);ss('sn1','sf1',r.k_score);ss('sn2','sf2',r.s_score);ss('sn3','sf3',r.a_score);
+  // Issue 2 fix: show score methodology panel
+  const smb=document.getElementById('showMethodBtn');
+  if(smb){smb.style.display='inline-flex';}
+  // Populate methodology values
+  const mVals={'sm_k_pct':(r.k_score||sc.k)+'%','sm_s_pct':(r.s_score||sc.s)+'%','sm_a_pct':(r.a_score||sc.a)+'%','sm_overall':(r.overall||sc.overall)+'%'};
+  Object.entries(mVals).forEach(([id,v])=>{const el=document.getElementById(id);if(el)el.textContent=v;});
+  const smR=document.getElementById('sm_req');
+  if(smR&&meta.sc){smR.textContent='Benchmark: '+getRequiredScore(meta.fk||'default',meta.lev||'')+'% for '+meta.lev;}
+
+  // Observation 2 fix: populate score breakdown box with actual formula output
+  const fk=fkey();
+  const reqScore=getRequiredScore(fk,meta.lev||'');
+  const sbd=document.getElementById('scoreBreakdownBox');
+  if(sbd&&sc&&cfg){
+    sbd.innerHTML=`<strong>Your score breakdown:</strong><br>
+      Knowledge ${sc.k}% = (${kv.join('+')||'—'}) ÷ 5 × 20 &nbsp;·&nbsp;
+      Skills ${sc.s}% = (${sv.join('+')||'—'}) ÷ 5 × 20 &nbsp;·&nbsp;
+      Attitude ${sc.a}% = (${av.join('+')||'—'}) ÷ 5 × 20<br>
+      Overall ${r.overall}% = (${sc.k}×35% + ${sc.s}×40% + ${sc.a}×25%)
+      &nbsp;·&nbsp; Role benchmark for <strong>${meta.lev||'your level'}</strong> in <strong>${(meta.func||'').split('/')[0].trim()}</strong>: <strong>${reqScore}%</strong>
+      &nbsp;·&nbsp; Status: <strong style="color:${r.overall>=reqScore?'var(--ok)':'var(--err)'}">${r.overall>=reqScore?'Meeting benchmark':'Below benchmark by '+(reqScore-r.overall)+'%'}</strong>`;
+  }
+
+  const gl=document.getElementById('gapList');gl.innerHTML='';
+  (r.gaps||[]).forEach(g=>{
+    const pc=Math.round(g.cur/5*100),rp=Math.round(g.req/5*100);
+    const dc=g.p==='Critical'?'gc':g.p==='Moderate'?'gm':'gl';
+    const bc=g.p==='Critical'?'var(--err)':g.p==='Moderate'?'var(--warn)':'var(--ok)';
+    gl.innerHTML+=`<div class="gap-item"><div class="gdot ${dc}"></div><div class="gbw"><div class="gname">${g.n}<span class="gcat">${g.c}</span></div><div class="gtrack"><div class="gcur" style="width:${pc}%;background:${bc}"></div><div class="greq" style="left:${rp}%"></div></div></div><div class="gnums">${g.cur}/5 → ${g.req}/5</div></div>`;
+  });
+
+  const jg=document.getElementById('jGrid');jg.innerHTML='';
+  Object.values(r.journey||{}).forEach((j,i)=>{
+    jg.innerHTML+=`<div class="jcard"><span class="jtag jt${i+1}">${j.label}</span><div class="jtheme">${j.theme}</div><ul class="jitems">${(j.items||[]).map(it=>`<li>${it}</li>`).join('')}</ul></div>`;
+  });
+
+  document.getElementById('strTags').innerHTML=(r.strengths||[]).map(s=>`<span class="tag tstr">${s}</span>`).join('');
+  document.getElementById('devTags').innerHTML=(r.dev||[]).map(s=>`<span class="tag tgap">${s}</span>`).join('');
+  document.getElementById('resView').scrollIntoView({behavior:'smooth'});
+}
+
+// ── GOOGLE SHEETS ─────────────────────────────────────────────────────────
+async function sendToSheets(p){
+  if(!SHEETS_URL||SHEETS_URL==='YOUR_APPS_SCRIPT_URL_HERE')return;
+  try{await fetch(SHEETS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});}catch(e){}
+}
+async function fetchSheetsData(){
+  if(!SHEETS_URL||SHEETS_URL==='YOUR_APPS_SCRIPT_URL_HERE')return null;
+  try{const r=await fetch(SHEETS_URL);const d=await r.json();return d.rows||[];}catch(e){return null;}
+}
+
+// ── ADMIN ─────────────────────────────────────────────────────────────────
+function openAdmin(){document.getElementById('adminPanel').style.display='block';document.body.style.overflow='hidden';}
+function closeAdmin(){document.getElementById('adminPanel').style.display='none';document.body.style.overflow='';}
+function adminLogin(){
+  const pwd=document.getElementById('adminPwd').value;
+  if(pwd===ADMIN_PWD){document.getElementById('adminLock').style.display='none';document.getElementById('adminDash').style.display='block';loadAdminData();}
+  else{document.getElementById('pwdErr').style.display='block';document.getElementById('adminPwd').value='';}
+}
+function showTab(id){
+  document.querySelectorAll('.atab').forEach((t,i)=>{t.classList.toggle('on',['overview','gaps','responses','setup'][i]===id);});
+  document.querySelectorAll('.atab-panel').forEach(p=>p.classList.remove('on'));
+  document.getElementById('tab-'+id).classList.add('on');
+}
+async function loadAdminData(){const rows=await fetchSheetsData();if(!rows||rows.length===0){renderDemoData();return;}renderAdminData(rows);}
+function renderDemoData(){
+  const demo=[
+    {Name:'Ravi Kumar',Role:'Production Supervisor',Function:'Manufacturing / Production',Experience:'9–15 years',Level:'Senior / Team lead','Overall %':61,'Knowledge %':59,'Skills %':60,'Attitude %':73,'Top Gap':'OEE & production analytics',Aspiration:'Plant Manager',Timestamp:'2026-01-15','AI Source':'Fallback'},
+    {Name:'Priya Sharma',Role:'HR Manager',Function:'HR / Learning & Development',Experience:'9–15 years',Level:'Manager / AGM','Overall %':64,'Knowledge %':62,'Skills %':58,'Attitude %':76,'Top Gap':'People analytics & HR data',Aspiration:'CHRO',Timestamp:'2026-01-16','AI Source':'AI'},
+    {Name:'Amit Singh',Role:'Quality Engineer',Function:'Quality / Process Excellence',Experience:'4–8 years',Level:'Engineer / Executive','Overall %':58,'Knowledge %':60,'Skills %':52,'Attitude %':70,'Top Gap':'Statistical process control',Aspiration:'Quality Head',Timestamp:'2026-01-17','AI Source':'AI'},
+    {Name:'Kavitha R',Role:'Finance Manager',Function:'Finance & Accounts',Experience:'9–15 years',Level:'Manager / AGM','Overall %':67,'Knowledge %':70,'Skills %':62,'Attitude %':72,'Top Gap':'Finance business partnering',Aspiration:'CFO',Timestamp:'2026-01-18','AI Source':'AI'},
+    {Name:'Suresh Patel',Role:'Maintenance Engineer',Function:'Maintenance / Engineering',Experience:'4–8 years',Level:'Senior / Team lead','Overall %':62,'Knowledge %':65,'Skills %':58,'Attitude %':68,'Top Gap':'Predictive maintenance',Aspiration:'Maintenance Head',Timestamp:'2026-01-19','AI Source':'Fallback'},
+    {Name:'Deepa Nair',Role:'SCM Executive',Function:'Supply Chain / Logistics',Experience:'4–8 years',Level:'Engineer / Executive','Overall %':59,'Knowledge %':58,'Skills %':55,'Attitude %':66,'Top Gap':'ERP / SAP supply chain',Aspiration:'Supply Chain Manager',Timestamp:'2026-01-20','AI Source':'AI'},
+  ];
+  renderAdminData(demo);showToast('Showing demo data — connect Google Sheets to see live responses',5000);
+}
+function renderAdminData(rows){
+  const n=rows.length;
+  const totOv=rows.reduce((a,r)=>a+(parseFloat(r['Overall %']||r.overall)||0),0);
+  const totK=rows.reduce((a,r)=>a+(parseFloat(r['Knowledge %']||r.k_score)||0),0);
+  document.getElementById('kpi-total').textContent=n;
+  document.getElementById('kpi-avg').textContent=n?Math.round(totOv/n)+'%':'—';
+  document.getElementById('kpi-k').textContent=n?Math.round(totK/n)+'%':'—';
+  const now=new Date();
+  const thisM=rows.filter(r=>{try{const d=new Date(r.Timestamp||r.timestamp);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();}catch(e){return false;}}).length;
+  document.getElementById('kpi-month').textContent=thisM||n;
+  const chart=(id,data,col)=>{
+    const el=document.getElementById(id);if(!el)return;
+    const sorted=Object.entries(data).sort((a,b)=>b[1]-a[1]).slice(0,8);
+    const mx=Math.max(...sorted.map(s=>s[1]),1);
+    el.innerHTML=sorted.map(([lbl,val])=>{const pct=Math.round(val/mx*100);const short=lbl.length>22?lbl.substring(0,22)+'…':lbl;return`<div class="bar-row"><div class="bar-lbl" title="${lbl}">${short}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${col}"><span class="bar-val">${val}</span></div></div></div>`;}).join('')||'<div class="no-data">No data yet</div>';
+  };
+  const funcC={},lvlC={},gapC={},aspC={},funcS={},funcN={};
+  const dims={Knowledge:0,Skills:0,Attitude:0,Overall:0};
+  rows.forEach(r=>{
+    const f=(r.Function||r.func||'Unknown').split('/')[0].trim();
+    funcC[f]=(funcC[f]||0)+1;funcS[f]=(funcS[f]||0)+(parseFloat(r['Overall %']||r.overall)||0);funcN[f]=(funcN[f]||0)+1;
+    const l=r.Level||r.lev||'Unknown';lvlC[l]=(lvlC[l]||0)+1;
+    const g=r['Top Gap']||r.top_gap||'';if(g)gapC[g]=(gapC[g]||0)+1;
+    const a=r.Aspiration||r.aspire||'';if(a)aspC[a]=(aspC[a]||0)+1;
+    dims.Knowledge+=(parseFloat(r['Knowledge %']||r.k_score)||0);
+    dims.Skills+=(parseFloat(r['Skills %']||r.s_score)||0);
+    dims.Attitude+=(parseFloat(r['Attitude %']||r.a_score)||0);
+    dims.Overall+=(parseFloat(r['Overall %']||r.overall)||0);
+  });
+  if(n>0)Object.keys(dims).forEach(k=>{dims[k]=Math.round(dims[k]/n);});
+  const funcAvg={};Object.keys(funcS).forEach(f=>{funcAvg[f]=Math.round(funcS[f]/funcN[f]);});
+  chart('funcChart',funcC,'#0369A1');chart('scoreChart',dims,'#059669');
+  chart('levelChart',lvlC,'#D97706');chart('gapChart',gapC,'#DC2626');
+  chart('funcScoreChart',funcAvg,'#4338CA');chart('aspChart',aspC,'#0EA5E9');
+  const tbody=document.getElementById('respBody');
+  tbody.innerHTML=rows.slice().reverse().slice(0,50).map(r=>{
+    const ov=parseFloat(r['Overall %']||r.overall)||0;
+    const col=ov>=75?'color:var(--ok)':ov>=55?'color:var(--warn)':'color:var(--err)';
+    const dt=r.Timestamp||r.timestamp||'';
+    const dts=dt?new Date(dt).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'2-digit'}):'—';
+    const src=r['AI Source']||r.ai_generated||'—';
+    return`<tr><td>${dts}</td><td><strong>${r.Name||r.name||'—'}</strong></td><td>${r.Role||r.role||'—'}</td><td>${(r.Function||r.func||'—').split('/')[0].trim()}</td><td>${r.Level||r.lev||'—'}</td><td>${r.Experience||r.exp||'—'}</td><td style="${col};font-weight:700">${ov?ov+'%':'—'}</td><td>${parseFloat(r['Knowledge %']||r.k_score)||'—'}%</td><td>${parseFloat(r['Skills %']||r.s_score)||'—'}%</td><td>${parseFloat(r['Attitude %']||r.a_score)||'—'}%</td><td>${r['Top Gap']||r.top_gap||'—'}</td><td>${r.Aspiration||r.aspire||'—'}</td><td style="font-size:10px;color:${src==='AI'?'var(--ok)':'var(--warn)'}">${src}</td></tr>`;
+  }).join('');
+  document.getElementById('curUrl').textContent=SHEETS_URL==='YOUR_APPS_SCRIPT_URL_HERE'?'Not configured':SHEETS_URL.substring(0,55)+'...';
+}
+function copyScript(){
+  const txt=document.getElementById('appsScript').textContent;
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(()=>showToast('✓ Apps Script copied — paste into script.google.com'));}
+  else{const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;top:-9999px;opacity:0';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);showToast('✓ Apps Script copied');}
+}
+function saveSheetsUrl(){
+  const url=document.getElementById('sheetsUrl').value.trim();
+  if(!url){showToast('Please enter a valid URL');return;}
+  SHEETS_URL=url;localStorage.setItem('cc_sheets_url',url);
+  document.getElementById('curUrl').textContent=url.substring(0,55)+'...';
+  showToast('✓ URL saved — testing connection...');
+  fetchSheetsData().then(d=>{showToast(d?'✓ Connected! Data loading...':'⚠ Could not connect — check URL and deployment settings',4000);if(d)loadAdminData();});
+}
+function savePwd(){
+  const pwd=document.getElementById('newPwd').value.trim();
+  if(!pwd||pwd.length<4){showToast('Password must be at least 4 characters');return;}
+  ADMIN_PWD=pwd;localStorage.setItem('cc_admin_pwd',pwd);document.getElementById('newPwd').value='';showToast('✓ Admin password updated');
+}
+
+// ── WORD EXPORT ───────────────────────────────────────────────────────────
+async function downloadWord(){
+  if(!lastResult){showToast('Please complete your assessment first.');return;}
+  const btn=document.getElementById('dlBtn');btn.innerHTML='Generating...';btn.disabled=true;
+  try{
+    const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,AlignmentType,LevelFormat,BorderStyle,WidthType,ShadingType}=docx;
+    const r=lastResult,m=lastMeta,sc=lastScores;
+    const today=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    const B='0369A1',W='FFFFFF',G50='F8FAFC',G200='E2E8F0';
+    const OK='059669',OKL='ECFDF5',WA='D97706',WAL='FFFBEB',ER='DC2626',ERL='FEF2F2';
+    const IND='4338CA',GD='334155',G5='64748B';
+    const bdr=c=>({style:BorderStyle.SINGLE,size:1,color:c||G200});
+    const ab=c=>({top:bdr(c),bottom:bdr(c),left:bdr(c),right:bdr(c)});
+    const sp=(b=0,a=0)=>({spacing:{before:b,after:a}});
+    const spacer=(sz=100)=>new Paragraph({...sp(sz,0),children:[new TextRun({text:'',size:2})]});
+    const divLine=()=>new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:6,color:G200,space:1}},...sp(200,200),children:[new TextRun({text:'',size:2})]});
+    const secHead=(text,col)=>new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:10,color:col||B,space:4}},...sp(320,120),children:[new TextRun({text,font:'Arial',size:28,bold:true,color:col||B,allCaps:true})]});
+    const bul=text=>new Paragraph({numbering:{reference:'bul',level:0},...sp(60,60),children:[new TextRun({text,font:'Arial',size:22,color:GD})]});
+    const cel=(t,w,fill,col,center,bold)=>new TableCell({borders:ab(G200),width:{size:w,type:WidthType.DXA},margins:{top:90,bottom:90,left:130,right:130},shading:{fill:fill||W,type:ShadingType.CLEAR},children:[new Paragraph({alignment:center?AlignmentType.CENTER:AlignmentType.LEFT,children:[new TextRun({text:String(t),font:'Arial',size:20,color:col||GD,bold:!!bold})]})]});
+    const hcel=(t,w)=>new TableCell({borders:ab(B),width:{size:w,type:WidthType.DXA},margins:{top:90,bottom:90,left:130,right:130},shading:{fill:B,type:ShadingType.CLEAR},children:[new Paragraph({children:[new TextRun({text:t,font:'Arial',size:19,bold:true,color:W,allCaps:true})]})]});
+    const scW=[4200,2000,2826];
+    const fk2=fkey();const reqS=getRequiredScore(fk2,m.lev||'');
+    const scTable=new Table({width:{size:9026,type:WidthType.DXA},columnWidths:scW,rows:[
+      new TableRow({children:['Dimension','Score','Status vs Benchmark'].map((h,i)=>hcel(h,scW[i]))}),
+      ...[['Overall Readiness (K35%+S40%+A25%)',r.overall+'%',r.overall>=reqS?'Meeting benchmark':'Below by '+(reqS-r.overall)+'%'],
+          ['Knowledge (avg × 20)',r.k_score+'%',r.k_score>=65?'Strong':r.k_score>=55?'Developing':'Needs Focus'],
+          ['Skills (avg × 20)',r.s_score+'%',r.s_score>=65?'Strong':r.s_score>=55?'Developing':'Needs Focus'],
+          ['Attitude & Behaviour (avg × 20)',r.a_score+'%',r.a_score>=65?'Strong':r.a_score>=55?'Developing':'Needs Focus'],
+          ['Role benchmark ('+m.lev+' in '+(m.func||'').split('/')[0].trim()+')',reqS+'%','Required threshold'],
+      ].map(([a,b,c],i)=>new TableRow({children:[cel(a,scW[0],i%2?W:G50,GD,false,i===4),cel(b,scW[1],i%2?W:G50,B,true),cel(c,scW[2],i%2?W:G50,i===4?GD:r.overall>=reqS?OK:ER)]}))
+    ]});
+    const gW=[3000,1500,1000,1100,800,1626];
+    const gapTable=new Table({width:{size:9026,type:WidthType.DXA},columnWidths:gW,rows:[
+      new TableRow({children:['Competency','Category','Current','Required','Gap','Priority'].map((h,i)=>hcel(h,gW[i]))}),
+      ...(r.gaps||[]).map((g,i)=>new TableRow({children:[cel(g.n,gW[0],i%2?W:G50),cel(g.c,gW[1],i%2?W:G50),cel(g.cur+'/5',gW[2],i%2?W:G50,GD,true),cel(g.req+'/5',gW[3],i%2?W:G50,GD,true),cel('-'+(g.req-g.cur),gW[4],i%2?W:G50,ER,true,true),cel(g.p,gW[5],g.p==='Critical'?ERL:g.p==='Moderate'?WAL:OKL,g.p==='Critical'?ER:g.p==='Moderate'?WA:OK,true,true)]}))
+    ]});
+    const jKeys=['m3','m6','m9','m12'],jCols=[2256,2256,2256,2258],jColors=[B,IND,WA,OK];
+    const jTable=new Table({width:{size:9026,type:WidthType.DXA},columnWidths:jCols,rows:[
+      new TableRow({children:jKeys.map((k,i)=>{const j=r.journey[k];return new TableCell({borders:ab(jColors[i]),width:{size:jCols[i],type:WidthType.DXA},margins:{top:100,bottom:100,left:130,right:130},shading:{fill:jColors[i],type:ShadingType.CLEAR},children:[new Paragraph({children:[new TextRun({text:j.label,font:'Arial',size:18,bold:true,color:W,allCaps:true})]}),spacer(60),new Paragraph({children:[new TextRun({text:j.theme,font:'Arial',size:21,bold:true,color:W})]})]}); })}),
+      new TableRow({children:jKeys.map((k,i)=>{const j=r.journey[k];return new TableCell({borders:ab(G200),width:{size:jCols[i],type:WidthType.DXA},margins:{top:120,bottom:120,left:130,right:130},shading:{fill:i%2===0?G50:W,type:ShadingType.CLEAR},children:(j.items||[]).map(it=>new Paragraph({...sp(60,60),children:[new TextRun({text:'→  '+it,font:'Arial',size:19,color:GD})]}))});})}),
+    ]});
+    const docObj=new Document({
+      numbering:{config:[{reference:'bul',levels:[{level:0,format:LevelFormat.BULLET,text:'•',alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:540,hanging:260}}}}]}]},
+      styles:{default:{document:{run:{font:'Arial',size:22,color:GD}}}},
+      sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1280,right:1280,bottom:1280,left:1280}}},children:[
+        new Paragraph({alignment:AlignmentType.CENTER,...sp(600,0),children:[new TextRun({text:'MY CAREER COMPASS',font:'Arial',size:52,bold:true,color:B,allCaps:true})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,...sp(80,0),children:[new TextRun({text:'Skill Gap Analysis & Personalised Learning Journey',font:'Arial',size:26,color:G5,italics:true})]}),
+        spacer(240),
+        new Paragraph({alignment:AlignmentType.CENTER,...sp(0,0),children:[new TextRun({text:m.name||'Professional',font:'Arial',size:38,bold:true,color:GD})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,...sp(60,0),children:[new TextRun({text:(m.role||'')+(m.func&&m.func!=='Not specified'?' · '+m.func:''),font:'Arial',size:24,color:'475569'})]}),
+        new Paragraph({alignment:AlignmentType.CENTER,...sp(40,0),children:[new TextRun({text:(m.exp||'')+(m.lev?' · '+m.lev:''),font:'Arial',size:22,color:'94A3B8'})]}),
+        spacer(60),
+        new Paragraph({alignment:AlignmentType.CENTER,...sp(0,0),children:[new TextRun({text:'Generated '+today+' · SMILE Academy · Sharda Motor Industries Limited',font:'Arial',size:18,color:'94A3B8'})]}),
+        divLine(),
+        secHead('1. Coach Insight'),
+        new Paragraph({border:{left:{style:BorderStyle.SINGLE,size:20,color:B,space:10}},...sp(80,80),indent:{left:260},children:[new TextRun({text:r.coach||'',font:'Arial',size:22,color:GD,italics:true})]}),
+        spacer(40),
+        secHead('2. Capability Readiness Scores & Methodology'),
+        new Paragraph({...sp(0,80),children:[new TextRun({text:'Formula: Dimension score = average of 5 KSA sliders × 20 (0–100 scale). Overall = Knowledge×35% + Skills×40% + Attitude×25%. Scores are recalibrated by AI against JD requirements and role-level benchmarks.',font:'Arial',size:19,color:G5,italics:true})]}),
+        scTable,spacer(80),
+        secHead('3. Skill Gap Analysis',ER),gapTable,spacer(80),
+        secHead('4. Current Strengths',OK),...(r.strengths||[]).map(s=>bul('✓  '+s)),spacer(80),
+        secHead('5. Priority Development Areas',WA),...(r.dev||[]).map(d=>bul('→  '+d)),spacer(80),
+        secHead('6. Your 12-Month Learning Journey'),
+        new Paragraph({...sp(0,80),children:[new TextRun({text:'Personalised roadmap specific to your role, function, career level and goals.',font:'Arial',size:21,color:G5,italics:true})]}),
+        jTable,spacer(240),
+        new Paragraph({alignment:AlignmentType.CENTER,border:{top:{style:BorderStyle.SINGLE,size:4,color:G200,space:8}},...sp(160,0),children:[new TextRun({text:'My Career Compass  ·  SMILE Academy  ·  SMIL  ·  MIT Licence',font:'Arial',size:17,color:'94A3B8',italics:true})]})
+      ]}]
+    });
+    const buf=await Packer.toBuffer(docObj);
+    const blob=new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');
+    a.href=url;a.download=(m.name||'Career').replace(/\s+/g,'_')+'_CareerCompass_Report_2026.docx';
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    showToast('✓ Word report downloaded!');
+  }catch(err){console.error(err);showToast('Download failed — try Print to PDF instead.',4000);}
+  finally{btn.innerHTML='<i class="ti ti-file-word" aria-hidden="true"></i> Download Word Report';btn.disabled=false;}
+}
+
+// ── COPY REPORT ───────────────────────────────────────────────────────────
+function copyReport(){
+  if(!lastResult){showToast('Please complete your assessment first.');return;}
+  const r=lastResult,m=lastMeta,sc=lastScores;
+  const j=Object.values(r.journey||{}).map(jj=>`${jj.label} — ${jj.theme}\n${(jj.items||[]).map(i=>'  → '+i).join('\n')}`).join('\n\n');
+  const txt=`MY CAREER COMPASS — SKILL GAP SUMMARY\n${'='.repeat(50)}\n${m.name} | ${m.role} | ${m.func}\n${m.exp} | ${m.lev}\n\nSCORES: Overall ${r.overall}% | K:${r.k_score}% | S:${r.s_score}% | A:${r.a_score}%\nFormula: K×35% + S×40% + A×25%\n\nCOACH:\n${r.coach}\n\nSTRENGTHS:\n${(r.strengths||[]).map(s=>'✓ '+s).join('\n')}\n\nGROWTH AREAS:\n${(r.dev||[]).map(d=>'→ '+d).join('\n')}\n\n12-MONTH JOURNEY:\n${j}\n\nMy Career Compass · SMILE Academy · SMIL · MIT Licence`;
+  function fallback(text){const ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:-9999px;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();let ok=false;try{ok=document.execCommand('copy');}catch(e){}document.body.removeChild(ta);if(ok)showToast('✓ Report copied!');else window.prompt('Copy (Ctrl+A then Ctrl+C):',text.substring(0,300)+'...');}
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(txt).then(()=>showToast('✓ Report copied!')).catch(()=>fallback(txt));}else{fallback(txt);}
+}
+
+function startOver(){
+  go(1);jdExtracted='';kpiExtracted='';jdFileName='';kpiFileName='';lastResult=null;lastMeta={};lastScores={};
+  document.getElementById('loadView').style.display='block';
+  document.getElementById('resView').style.display='none';
+  ['jdStat','kpiStat'].forEach(id=>{document.getElementById(id).className='fstatus';});
+  ['jdPrev','kpiPrev'].forEach(id=>{document.getElementById(id).style.display='none';});
+  ['jdConfirm','kpiConfirm'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+}
+</script>
+</body>
+</html>
